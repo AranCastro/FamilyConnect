@@ -19,12 +19,12 @@
   --ink: #1b2030;
   --muted: #687089;
   --line: #e3e7f1;
-  --hero-a: #ff5f4d;          /* sunrise coral */
-  --hero-b: #ffa63d;          /* marigold */
-  --hero-ink: #ffffff;
-  --brand: #f0503f;           /* primary buttons */
-  --brand-ink: #ffffff;
-  --brand-soft: #ffe9e5;
+  /* app colour theme, changeable in Settings (default: Sunrise) */
+  --hero-a: #ff5f4d; --hero-b: #ffa63d; --brand: #f0503f;
+  --hero-ink: #ffffff; --brand-ink: #ffffff;
+  --brand-soft: color-mix(in srgb, var(--brand) 14%, var(--surface));
+  --hero-dim: 0;
+  --on-mc: #ffffff;           /* initials on a member colour */
   --new: #ffcc33; --new-ink: #3a2a00;
   /* request types */
   --g: #18a35f; --g-bg: #e2f7ea;   /* grocery */
@@ -40,7 +40,7 @@
 }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
   --bg: #11131b; --surface: #1b1e29; --surface-2: #222634; --ink: #eceef6; --muted: #a2a8bd; --line: #2d3244;
-  --hero-a: #c9402f; --hero-b: #d27a1f; --hero-ink: #ffffff; --brand: #ff6a58; --brand-ink: #1b0b08; --brand-soft: #3a1f1b;
+  --hero-dim: .3; --on-mc: #11131b;
   --new: #ffd451; --new-ink: #2a1f00;
   --g: #5fd796; --g-bg: #17311f; --p: #7fb1ff; --p-bg: #172840; --m: #ff8db3; --m-bg: #3a1a27; --r: #b79bff; --r-bg: #2a2045;
   --c1: #6fa7ff; --c2: #ff7fa8; --c3: #ffbe4d; --c4: #5fd796; --c5: #b79bff; --c6: #4fd3e2;
@@ -48,12 +48,18 @@
   color-scheme: dark; } }
 :root[data-theme="dark"] {
   --bg: #11131b; --surface: #1b1e29; --surface-2: #222634; --ink: #eceef6; --muted: #a2a8bd; --line: #2d3244;
-  --hero-a: #c9402f; --hero-b: #d27a1f; --hero-ink: #ffffff; --brand: #ff6a58; --brand-ink: #1b0b08; --brand-soft: #3a1f1b;
+  --hero-dim: .3; --on-mc: #11131b;
   --new: #ffd451; --new-ink: #2a1f00;
   --g: #5fd796; --g-bg: #17311f; --p: #7fb1ff; --p-bg: #172840; --m: #ff8db3; --m-bg: #3a1a27; --r: #b79bff; --r-bg: #2a2045;
   --c1: #6fa7ff; --c2: #ff7fa8; --c3: #ffbe4d; --c4: #5fd796; --c5: #b79bff; --c6: #4fd3e2;
   --ok: #5fd796; --warn: #ffbe4d; --bad: #ff7b72; --shadow: 0 1px 2px rgba(0,0,0,.45);
   color-scheme: dark; }
+
+:root[data-accent="ocean"]  { --hero-a: #1f7ae0; --hero-b: #1fc2d4; --brand: #1f7ae0; }
+:root[data-accent="forest"] { --hero-a: #10915a; --hero-b: #86c93a; --brand: #10915a; }
+:root[data-accent="royal"]  { --hero-a: #6a3fe0; --hero-b: #d14fbf; --brand: #6a3fe0; }
+:root[data-accent="rose"]   { --hero-a: #d93a6f; --hero-b: #ff9a76; --brand: #d93a6f; }
+:root[data-accent="night"]  { --hero-a: #273248; --hero-b: #4a5d84; --brand: #3d5488; }
 
 * { box-sizing: border-box; }
 body { background: var(--bg); color: var(--ink); font: 16px/1.5 var(--f-body); margin: 0; }
@@ -69,7 +75,7 @@ button { cursor: pointer; }
 .t-reminder { --t: var(--r); --tb: var(--r-bg); }
 
 /* ---------- Header ---------- */
-.hero { background: linear-gradient(120deg, var(--hero-a), var(--hero-b)); color: var(--hero-ink); border-radius: 0 0 26px 26px; }
+.hero { background: linear-gradient(rgba(0,0,0,var(--hero-dim)), rgba(0,0,0,var(--hero-dim))), linear-gradient(120deg, var(--hero-a), var(--hero-b)); color: var(--hero-ink); border-radius: 0 0 26px 26px; }
 .hero .wrap { padding-block: 14px 18px; display: grid; gap: 12px; }
 .hero-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 .hero h1 { font-size: 1.5rem; font-weight: 800; }
@@ -79,7 +85,9 @@ button { cursor: pointer; }
 .who::after { content: "▾"; position: absolute; right: 12px; pointer-events: none; font-size: .8rem; }
 .who select option { color: #1b2030; background: #fff; }
 .stack { display: flex; align-items: center; }
-.stack button { margin-left: -8px; border: 2.5px solid rgba(255,255,255,.9); background: var(--mc); width: 40px; height: 40px; border-radius: 50%; font-size: 1.25rem; display: grid; place-items: center; padding: 0; transition: transform .15s; }
+.stack button { margin-left: -8px; border: 2.5px solid rgba(255,255,255,.9); width: 42px; height: 42px; border-radius: 50%; padding: 0; overflow: hidden; transition: transform .15s; background: var(--mc); }
+.ph { display: grid; place-items: center; width: 100%; height: 100%; border-radius: 50%; overflow: hidden; background: var(--mc); color: var(--on-mc); font-weight: 800; font-family: var(--f-display); line-height: 1; }
+.ph img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .stack button:first-child { margin-left: 0; }
 .stack button[aria-pressed="true"] { transform: translateY(-3px) scale(1.12); box-shadow: 0 0 0 3px var(--new); z-index: 1; }
 .stack-note { font-size: .82rem; font-weight: 600; opacity: .95; margin-left: 10px; }
@@ -132,7 +140,7 @@ section { display: grid; gap: 12px; }
 .when.overdue { color: var(--bad); }
 .people { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: .85rem; color: var(--muted); font-weight: 700; }
 .av { display: inline-flex; align-items: center; gap: 5px; padding: 2px 10px 2px 2px; border-radius: 999px; background: color-mix(in srgb, var(--mc) 14%, var(--surface)); color: var(--ink); font-size: .84rem; font-weight: 700; white-space: nowrap; }
-.av i { font-style: normal; display: inline-grid; place-items: center; width: 1.6em; height: 1.6em; border-radius: 50%; background: var(--mc); font-size: .95em; }
+.av i { font-style: normal; display: inline-block; width: 1.75em; height: 1.75em; font-size: .9em; }
 .av.acked::after { content: "👍"; font-size: .85em; }
 .note { background: var(--surface-2); border-radius: 12px; padding: 8px 12px; font-size: .92rem; }
 .note::before { content: "📝 "; }
@@ -175,7 +183,14 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .panel { background: var(--surface); border-radius: 22px; box-shadow: var(--shadow); padding: 16px; display: grid; gap: 14px; }
 .member-row { display: flex; align-items: center; gap: 12px; justify-content: space-between; flex-wrap: wrap; }
 .member-row + .member-row { border-top: 1px solid var(--line); padding-top: 12px; }
-.face { width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; font-size: 1.5rem; background: var(--mc); flex: none; }
+.face { width: 52px; height: 52px; flex: none; font-size: 1.3rem; position: relative; }
+.face .cam { position: absolute; right: -4px; bottom: -4px; width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--surface); background: var(--brand); color: var(--brand-ink); font-size: .7rem; display: grid; place-items: center; padding: 0; }
+.photo-pick { display: flex; align-items: center; gap: 12px; }
+.photo-pick .face { width: 64px; height: 64px; font-size: 1.5rem; }
+.accents { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 8px; }
+.accents button { border: 2px solid var(--line); background: var(--surface); border-radius: 14px; padding: 6px; display: grid; gap: 4px; font-size: .8rem; font-weight: 700; color: var(--ink); }
+.accents button i { display: block; height: 28px; border-radius: 9px; }
+.accents button[aria-pressed="true"] { border-color: var(--ink); }
 .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
 label.f { display: grid; gap: 5px; font-size: .86rem; color: var(--muted); }
 label.f > span { font-weight: 700; }
@@ -212,7 +227,7 @@ fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: 6px; }
 legend { font-size: .86rem; color: var(--muted); font-weight: 700; padding: 0; margin-bottom: 6px; }
 .tagger { display: flex; flex-wrap: wrap; gap: 8px; }
 .tagger label { display: inline-flex; align-items: center; gap: 6px; border: 2px solid var(--line); border-radius: 999px; padding: 3px 12px 3px 3px; font-size: .9rem; font-weight: 700; cursor: pointer; }
-.tagger label i { font-style: normal; width: 1.8em; height: 1.8em; border-radius: 50%; display: grid; place-items: center; background: var(--mc); }
+.tagger label i { font-style: normal; width: 1.9em; height: 1.9em; display: inline-block; font-size: .85em; }
 .tagger input { position: absolute; opacity: 0; width: 1px; height: 1px; }
 .tagger label:has(input:checked) { border-color: var(--mc); background: color-mix(in srgb, var(--mc) 15%, var(--surface)); }
 .tagger label:has(input:checked)::after { content: "✓"; color: var(--mc); font-weight: 800; }
@@ -242,7 +257,7 @@ legend { font-size: .86rem; color: var(--muted); font-weight: 700; padding: 0; m
     </div>
     <div class="hero-row" style="justify-content:flex-start;gap:0">
       <div class="stack" id="stack" role="group" aria-label="Switch family member"></div>
-      <span class="stack-note">Tap a face to see the app as them</span>
+      <span class="stack-note">Tap a person to see the app as them</span>
     </div>
   </div>
 </header>
@@ -277,14 +292,16 @@ legend { font-size: .86rem; color: var(--muted); font-weight: 700; padding: 0; m
   </form>
 </dialog>
 
+<input type="file" id="photoInput" accept="image/*" hidden aria-label="Choose a profile photo">
 <div id="toasts" class="toasts" role="status"></div>
 
 <script>
 'use strict';
 /* FamilyConnect prototype. All data stays in this browser (localStorage). */
-const STORE_KEY = 'familyconnect.prototype.v2';
+const STORE_KEY = 'familyconnect.prototype.v3';
 const RELATIONS = ['Father','Mother','Husband','Wife','Son','Daughter','Grandfather','Grandmother','Brother','Sister','Uncle','Aunt','Other'];
-const EMOJIS = ['👨','👩','👧','👦','👴','👵','🧑','👶','🧔','👩‍🦱','👨‍🦳','👩‍🦳'];
+const ACCENTS = { sunrise: ['Sunrise', '#ff5f4d', '#ffa63d'], ocean: ['Ocean', '#1f7ae0', '#1fc2d4'], forest: ['Forest', '#10915a', '#86c93a'],
+  royal: ['Royal', '#6a3fe0', '#d14fbf'], rose: ['Rose', '#d93a6f', '#ff9a76'], night: ['Night', '#273248', '#4a5d84'] };
 const COLOURS = 6;
 const TYPES = {
   grocery:  { label: 'Grocery',  icon: '🛒', long: 'Grocery list' },
@@ -309,11 +326,11 @@ function seed() {
     familyName: 'The Sharma Family',
     currentId: 'm2',
     members: [
-      { id: 'm1', name: 'Ravi',   relation: 'Husband',     emoji: '👨', color: 1 },
-      { id: 'm2', name: 'Priya',  relation: 'Wife',        emoji: '👩', color: 2 },
-      { id: 'm3', name: 'Anu',    relation: 'Daughter',    emoji: '👧', color: 3 },
-      { id: 'm4', name: 'Kiran',  relation: 'Son',         emoji: '👦', color: 4 },
-      { id: 'm5', name: 'Dadaji', relation: 'Grandfather', emoji: '👴', color: 5 },
+      { id: 'm1', name: 'Ravi',   relation: 'Husband',     color: 1 },
+      { id: 'm2', name: 'Priya',  relation: 'Wife',        color: 2 },
+      { id: 'm3', name: 'Anu',    relation: 'Daughter',    color: 3 },
+      { id: 'm4', name: 'Kiran',  relation: 'Son',         color: 4 },
+      { id: 'm5', name: 'Dadaji', relation: 'Grandfather', color: 5 },
     ],
     items: [
       { id: 'i1', type: 'grocery', title: 'Weekly groceries', createdBy: 'm2', assignees: ['m1'], ack: [], status: 'open', createdAt: iso,
@@ -355,9 +372,12 @@ let createType = 'grocery';
 const member = id => state.members.find(m => m.id === id);
 const nameOf = id => member(id)?.name ?? 'Someone';
 const mc = m => `--mc: var(--c${m?.color || 1})`;
+const initials = name => String(name || '?').trim().split(/\s+/).map(w => w[0]).join('').slice(0, 2).toUpperCase();
+/* Profile photo if the member has one, otherwise their initials on their colour. */
+const face = m => m?.photo ? `<span class="ph" style="${mc(m)}"><img src="${m.photo}" alt=""></span>` : `<span class="ph" style="${mc(m)}">${esc(initials(m?.name))}</span>`;
 const avatar = (id, acked = false) => {
   const m = member(id); if (!m) return '';
-  return `<span class="av${acked ? ' acked' : ''}" style="${mc(m)}" title="${esc(m.relation)}${acked ? ' · on it' : ''}"><i>${esc(m.emoji)}</i>${esc(m.name)}</span>`;
+  return `<span class="av${acked ? ' acked' : ''}" style="${mc(m)}" title="${esc(m.relation)}${acked ? ' · on it' : ''}"><i>${face(m)}</i>${esc(m.name)}</span>`;
 };
 const fmtTime = d => d.toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit' });
 function fmtWhen(iso) {
@@ -516,9 +536,9 @@ function viewMembers() {
   return `
     <div class="section-h"><h2>Our family 👨‍👩‍👧‍👦</h2><small>${state.members.length} members</small></div>
     <div class="panel">${state.members.map(m => `
-      <div class="member-row"><div style="display:flex;gap:12px;align-items:center;min-width:0"><span class="face" style="${mc(m)}">${esc(m.emoji)}</span>
+      <div class="member-row"><div style="display:flex;gap:12px;align-items:center;min-width:0"><span class="face">${face(m)}<button type="button" class="cam" data-action="photo" data-id="${m.id}" aria-label="Change ${esc(m.name)}’s photo" title="Change photo">📷</button></span>
         <div><b>${esc(m.name)}</b>${m.id === state.currentId ? ' <small class="meta">· you</small>' : ''}<br><small class="meta">${esc(m.relation)}</small></div></div>
-        <div class="actions">${m.id !== state.currentId ? `<button type="button" class="btn small" data-action="switch" data-id="${m.id}">Act as</button>` : ''}
+        <div class="actions">${m.photo ? `<button type="button" class="btn small danger" data-action="photo-remove" data-id="${m.id}">Remove photo</button>` : `<button type="button" class="btn small" data-action="photo" data-id="${m.id}">📷 Add photo</button>`}${m.id !== state.currentId ? `<button type="button" class="btn small" data-action="switch" data-id="${m.id}">Act as</button>` : ''}
         ${state.members.length > 1 ? `<button type="button" class="btn small danger" data-action="remove-member" data-id="${m.id}">Remove</button>` : ''}</div></div>`).join('')}
     </div>
     <form class="panel" data-form="add-member">
@@ -526,28 +546,32 @@ function viewMembers() {
       <div class="grid2">
         <label class="f" for="nm-name"><span>Name</span><input id="nm-name" name="name" required placeholder="e.g. Meena"></label>
         <label class="f" for="nm-rel"><span>Relation</span><select id="nm-rel" name="relation">${RELATIONS.map(r => `<option>${r}</option>`).join('')}</select></label>
-        <label class="f" for="nm-emoji"><span>Avatar</span><select id="nm-emoji" name="emoji">${EMOJIS.map(e => `<option>${e}</option>`).join('')}</select></label>
       </div>
-      <fieldset><legend>Colour</legend><div class="swatches">${Array.from({ length: COLOURS }, (_, i) => i + 1).map(c =>
+      <div class="photo-pick"><span class="face" id="nm-preview" style="--mc: var(--c${next})"><span class="ph">📷</span></span>
+        <label class="f" for="nm-photo" style="flex:1;min-width:0"><span>Profile photo (optional)</span><input type="file" id="nm-photo" name="photo" accept="image/*"></label></div>
+      <fieldset><legend>Colour (used when there is no photo)</legend><div class="swatches">${Array.from({ length: COLOURS }, (_, i) => i + 1).map(c =>
         `<label style="--mc: var(--c${c})" for="nm-c${c}"><input type="radio" id="nm-c${c}" name="color" value="${c}" ${c === next ? 'checked' : ''} aria-label="Colour ${c}"></label>`).join('')}</div></fieldset>
       <div class="row-end"><button class="btn primary">Add to family</button></div>
     </form>
     <form class="panel" data-form="settings">
       <h3>⚙️ Settings</h3>
+      <fieldset><legend>App colours</legend><div class="accents">${Object.entries(ACCENTS).map(([k, [label, a, b]]) =>
+        `<button type="button" data-action="accent" data-accent="${k}" aria-pressed="${(state.accent || 'sunrise') === k}"><i style="background:linear-gradient(120deg,${a},${b})"></i>${label}</button>`).join('')}</div></fieldset>
       <label class="f" for="fam-name"><span>Family name</span><input id="fam-name" name="familyName" value="${esc(state.familyName)}"></label>
       <div class="actions"><button class="btn primary">Save name</button>
         <button type="button" class="btn" data-action="notif">🔔 Allow notifications</button>
         <button type="button" class="btn danger" data-action="reset">Reset example data</button></div>
-      <p class="meta">In the Android app, members join with their mobile number and an invite code, and reminders arrive as phone notifications even when the app is closed.</p>
+      <p class="meta">In the Android app, everyone signs in with their Google (Gmail) account and joins the family with an invite code. Changes sync to every member’s phone within a second or two, and reminders arrive as phone notifications even when the app is closed.</p>
     </form>`;
 }
 
 function render() {
   if (!member(state.currentId)) state.currentId = state.members[0].id;
+  if (state.accent && state.accent !== 'sunrise') document.documentElement.dataset.accent = state.accent; else delete document.documentElement.dataset.accent;
   $('#familyName').textContent = state.familyName;
   $('#subtitle').textContent = `${state.members.length} members · ${state.items.filter(i => i.status === 'open').length} open requests`;
-  $('#whoSelect').innerHTML = state.members.map(m => `<option value="${m.id}" ${m.id === state.currentId ? 'selected' : ''}>${esc(m.emoji)} ${esc(m.name)}</option>`).join('');
-  $('#stack').innerHTML = state.members.map(m => `<button type="button" style="${mc(m)}" data-action="switch" data-id="${m.id}" aria-pressed="${m.id === state.currentId}" title="${esc(m.name)} (${esc(m.relation)})" aria-label="Act as ${esc(m.name)}">${esc(m.emoji)}</button>`).join('');
+  $('#whoSelect').innerHTML = state.members.map(m => `<option value="${m.id}" ${m.id === state.currentId ? 'selected' : ''}>${esc(m.name)}</option>`).join('');
+  $('#stack').innerHTML = state.members.map(m => `<button type="button" style="${mc(m)}" data-action="switch" data-id="${m.id}" aria-pressed="${m.id === state.currentId}" title="${esc(m.name)} (${esc(m.relation)})" aria-label="Act as ${esc(m.name)}">${face(m)}</button>`).join('');
   const n = unseenForMe().length; const b = $('#mineBadge'); b.hidden = !n; b.textContent = n;
   document.querySelectorAll('.tabs [data-tab]').forEach(x => x.dataset.tab === tab ? x.setAttribute('aria-current', 'page') : x.removeAttribute('aria-current'));
   $('#view').innerHTML = { today: viewToday, mine: viewMine, family: viewFamily, members: viewMembers }[tab]();
@@ -589,7 +613,7 @@ function tick() {
 }
 
 /* ---------- Composer ---------- */
-function memberOptions(sel) { return state.members.map(m => `<option value="${m.id}" ${m.id === sel ? 'selected' : ''}>${esc(m.emoji)} ${esc(m.name)}</option>`).join(''); }
+function memberOptions(sel) { return state.members.map(m => `<option value="${m.id}" ${m.id === sel ? 'selected' : ''}>${esc(m.name)}</option>`).join(''); }
 function inHours(h) { const d = new Date(Date.now() + h * 3600000); d.setMinutes(Math.ceil(d.getMinutes() / 15) * 15, 0, 0); return toLocalInput(d); }
 function typeFields(type) {
   const f = (id, label, input) => `<label class="f" for="${id}"><span>${label}</span>${input}</label>`;
@@ -628,7 +652,7 @@ function openComposer(type = createType) {
   $('#tagLegend').textContent = type === 'medicine' ? 'Tag caregivers (alerted if a dose is missed)' : 'Tag family members (they get the reminder)';
   const checked = new Set([...document.querySelectorAll('#tagger input:checked')].map(i => i.value));
   $('#tagger').innerHTML = state.members.filter(m => m.id !== state.currentId || type === 'medicine').map(m =>
-    `<label for="tag-${m.id}" style="${mc(m)}"><input type="checkbox" id="tag-${m.id}" name="assign" value="${m.id}" ${checked.has(m.id) ? 'checked' : ''}><i>${esc(m.emoji)}</i>${esc(m.name)}</label>`).join('');
+    `<label for="tag-${m.id}" style="${mc(m)}"><input type="checkbox" id="tag-${m.id}" name="assign" value="${m.id}" ${checked.has(m.id) ? 'checked' : ''}><i>${face(m)}</i>${esc(m.name)}</label>`).join('');
   if (!$('#composer').open) { $('#f-notes').value = ''; $('#composer').showModal(); }
 }
 function submitComposer(e) {
@@ -670,6 +694,9 @@ document.addEventListener('click', e => {
     case 'toggle-line': { const l = it.list.find(x => x.id === b.dataset.line); l.done = !l.done; l.doneBy = l.done ? state.currentId : undefined;
       if (it.list.every(x => x.done) && it.status === 'open') { it.status = 'done'; it.doneBy = state.currentId; toast(`🎉 Everything bought! ${nameOf(it.createdBy)} has been told.`); } break; }
     case 'switch': if (state.currentId === b.dataset.id) return; state.currentId = b.dataset.id; announceSwitch(); break;
+    case 'photo': photoFor = b.dataset.id; $('#photoInput').value = ''; $('#photoInput').click(); return;
+    case 'photo-remove': delete member(b.dataset.id).photo; toast('Photo removed.'); break;
+    case 'accent': state.accent = b.dataset.accent; toast(`🎨 ${ACCENTS[state.accent][0]} colours applied.`); break;
     case 'remove-member': { const id = b.dataset.id; state.members = state.members.filter(m => m.id !== id);
       state.items.forEach(x => { x.assignees = x.assignees.filter(a => a !== id); x.ack = x.ack.filter(a => a !== id); }); break; }
     case 'notif':
@@ -689,8 +716,51 @@ document.addEventListener('submit', e => {
   e.preventDefault();
   const fd = new FormData(f);
   if (f.dataset.form === 'add-line') { const v = (fd.get('line') || '').trim(); if (!v) return; const it = state.items.find(x => x.id === f.dataset.id); it.list.push({ id: uid(), text: v, done: false }); it.status = 'open'; commit(); document.getElementById(`add-${it.id}`)?.focus(); }
-  if (f.dataset.form === 'add-member') { const name = (fd.get('name') || '').trim(); if (!name) { toast('Enter a name first.'); return; } state.members.push({ id: uid(), name, relation: fd.get('relation'), emoji: fd.get('emoji'), color: Number(fd.get('color')) || 1 }); toast(`👋 ${name} added to the family.`); commit(); }
+  if (f.dataset.form === 'add-member') {
+    const name = (fd.get('name') || '').trim(); if (!name) { toast('Enter a name first.'); return; }
+    const m = { id: uid(), name, relation: fd.get('relation'), color: Number(fd.get('color')) || 1 };
+    const file = fd.get('photo');
+    readPhoto(file && file.size ? file : null).then(url => { if (url) m.photo = url; }).catch(() => toast('That file is not a photo, so initials are used instead.'))
+      .finally(() => { state.members.push(m); toast(`👋 ${name} added to the family.`); commit(); });
+  }
   if (f.dataset.form === 'settings') { state.familyName = (fd.get('familyName') || '').trim() || 'My Family'; toast('✅ Family name saved.'); commit(); }
+});
+/* Crops the chosen picture to a square and shrinks it to 192 x 192 px so it stays small. */
+function readPhoto(file) {
+  return new Promise((resolve, reject) => {
+    if (!file) return resolve(null);
+    if (!file.type.startsWith('image/')) return reject(new Error('not an image'));
+    const r = new FileReader();
+    r.onerror = reject;
+    r.onload = () => {
+      const img = new Image();
+      img.onerror = reject;
+      img.onload = () => {
+        const S = 192, side = Math.min(img.width, img.height), c = document.createElement('canvas');
+        c.width = c.height = S;
+        c.getContext('2d').drawImage(img, (img.width - side) / 2, (img.height - side) / 2, side, side, 0, 0, S, S);
+        resolve(c.toDataURL('image/jpeg', 0.82));
+      };
+      img.src = r.result;
+    };
+    r.readAsDataURL(file);
+  });
+}
+let photoFor = null;
+$('#photoInput').addEventListener('change', e => {
+  const m = member(photoFor), file = e.target.files[0]; if (!m || !file) return;
+  readPhoto(file).then(url => { m.photo = url; toast(`📷 Photo updated for ${m.name}.`); commit(); })
+    .catch(() => toast('That file is not a photo. Choose a JPG or PNG picture.'));
+});
+document.addEventListener('change', e => {
+  if (e.target.id !== 'nm-photo') return;
+  const file = e.target.files[0], box = $('#nm-preview');
+  readPhoto(file || null).then(url => { box.innerHTML = url ? `<span class="ph"><img src="${url}" alt=""></span>` : '<span class="ph">📷</span>'; })
+    .catch(() => toast('That file is not a photo. Choose a JPG or PNG picture.'));
+});
+document.addEventListener('change', e => {
+  if (e.target.name !== 'color' || !e.target.closest('[data-form="add-member"]')) return;
+  $('#nm-preview').style.setProperty('--mc', `var(--c${e.target.value})`);
 });
 function announceSwitch() {
   const n = unseenForMe().length;

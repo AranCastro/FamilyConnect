@@ -17,7 +17,7 @@ Examples:
 
 ## Trying the prototype
 
-Open `prototype/index.html` in a browser. It starts with an example family. Use **Acting as** at the top to switch between members and see what each one receives. Data is stored only in that browser (`localStorage`); there is no server yet, so phones do not sync with each other.
+Open `prototype/index.html` in a browser. It starts with an example family. Tap a member's photo at the top to switch between members and see what each one receives. Data is stored only in that browser (`localStorage`); there is no server yet, so phones do not sync with each other.
 
 ## Next step
 

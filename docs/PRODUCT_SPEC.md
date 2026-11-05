@@ -8,6 +8,9 @@
 | Language | English only |
 | Pricing | Free app, no paid tier and no in-app purchases |
 | Visual style | Modern, colourful, emoji-led interface (see section 6A) |
+| Sign-in | Google account (Gmail) via one-tap sign-in |
+| Member pictures | Real profile photos; initials on the member's colour until a photo is added |
+| App colours | Six selectable colour themes (Sunrise, Ocean, Forest, Royal, Rose, Night) |
 
 ## 1. Purpose
 
@@ -30,9 +33,10 @@ Every member belongs to one family group. A member may be marked as an **admin**
 ## 3. Core features (MVP)
 
 ### 3.1 Family group
-- Create a family; invite members by mobile number or a six-digit invite code / QR code.
-- Each member has a name, relation (Father, Mother, Husband, Wife, Son, Daughter, Grandfather, Grandmother, other) and photo.
-- Sign-in with mobile number and OTP.
+- Sign in with a Google account (the Gmail account already on the Android phone; one tap, no password or OTP).
+- Create a family; invite members with a six-digit invite code or link shared on WhatsApp.
+- Each member has a name, relation (Father, Mother, Husband, Wife, Son, Daughter, Grandfather, Grandmother, other) and a profile photo. The Google account photo is used by default and can be replaced from the camera or gallery. Without a photo, the member's initials are shown on their chosen colour.
+- Elders without their own phone can be added by an admin as a "managed member": they appear in the family and can receive medicine schedules, while caregivers confirm doses for them.
 
 ### 3.2 Grocery and shopping lists
 - Checklist items, added by any member at any time.
@@ -75,7 +79,7 @@ Every member belongs to one family group. A member may be marked as an **admin**
 
 ```
 Family      { id, name, inviteCode, createdAt }
-Member      { id, familyId, name, relation, phone, photoUrl, isAdmin, pushToken }
+Member      { id, familyId, googleUid, email, name, relation, colour, photoUrl, isAdmin, isManaged, pushTokens[] }
 Item        { id, familyId, type: grocery|pickup|medicine|reminder,
               title, notes, createdBy, assignees[], acknowledgedBy[],
               status: open|done, doneBy, due, createdAt }
@@ -91,15 +95,35 @@ Reminder    { itemId, repeat: none|daily|weekly|monthly }
 | Layer | Recommendation | Reason |
 |---|---|---|
 | Mobile app | Kotlin + Jetpack Compose (Material 3) | Native Android toolkit; direct access to Android exact alarms and notification channels, which medicine and pickup reminders depend on |
-| Sign-in | Firebase Authentication (phone OTP) | Matches how families already identify each other |
+| Sign-in | Firebase Authentication with Google sign-in | Every Android phone already has a Google account, so sign-in is one tap; no SMS charges |
 | Database | Cloud Firestore | Real-time sync between family members' phones |
 | Notifications | Firebase Cloud Messaging + Android AlarmManager | FCM delivers new tags from other members; local exact alarms fire medicine and pickup reminders even when offline |
 | Server logic | Cloud Functions (scheduled) | Missed-dose alerts to caregivers |
 | Offline | Firestore offline cache | Lists remain usable with poor connectivity |
+| Photos | Firebase Cloud Storage | Profile photos, resized on the phone to about 200 × 200 px before upload |
 
 Running costs for a free app: Firebase's no-cost Spark plan covers a small beta; Cloud Functions require the pay-as-you-go Blaze plan, which has a monthly free allowance. Publishing on Google Play requires a one-time developer registration fee. Check current Firebase and Google Play pricing before launch, as both change.
 
 If an iPhone version is wanted later, the data layer (Firebase) can be reused and only the app screens need rebuilding.
+
+## 6B. How syncing works
+
+1. **Sign-in.** Each member opens the app and taps "Continue with Google". Firebase Authentication confirms the account; no separate password is created.
+2. **Joining.** The first member creates the family and receives an invite code. Others enter the code (or tap the shared link) and are added to that family.
+3. **One shared copy.** The family's members, lists and reminders are stored once in Cloud Firestore, under that family. Every member's phone keeps a live connection ("listener") to it.
+4. **Live updates.** When Priya adds "Milk 2 L" to the grocery list, her phone writes the change to Firestore; Ravi's phone receives it, usually within one to two seconds, and the list updates on screen. When Ravi ticks the item, Priya sees the tick.
+5. **Notifications.** When someone is tagged, a Cloud Function sends a push notification through Firebase Cloud Messaging to the tagged members' phones, even if the app is closed. Medicine and pickup times are also set as alarms on each phone, so they fire without internet.
+6. **Offline.** Without internet, changes are saved on the phone and uploaded automatically when the connection returns.
+7. **Privacy.** Firestore security rules allow a signed-in user to read and write only the data of families they belong to.
+
+```mermaid
+flowchart LR
+  A[Priya's phone] -- adds item --> F[(Cloud Firestore<br/>family data)]
+  F -- live update --> B[Ravi's phone]
+  F -- live update --> C[Anu's phone]
+  F -- new tag --> CF[Cloud Function]
+  CF -- push notification --> B
+```
 
 ## 6A. Visual design
 
@@ -107,9 +131,10 @@ The prototype in `prototype/` sets the visual direction for the Android app.
 
 | Element | Specification |
 |---|---|
-| Header | Coral-to-marigold gradient (`#FF5F4D` → `#FFA63D`) with the family's avatar faces |
+| Header | Gradient in the chosen theme colours (default Sunrise `#FF5F4D` → `#FFA63D`) with the family members' photos |
 | Request colours | Grocery green `#18A35F` 🛒 · Pickup blue `#2F7EF0` 🚗 · Medicine pink `#E2457B` 💊 · Reminder violet `#8458F2` ⏰ |
-| Member colours | Six avatar colours (blue, pink, amber, green, violet, teal); each member picks one, and it appears wherever that person is tagged |
+| Member pictures | Circular profile photos; initials on one of six member colours (blue, pink, amber, green, violet, teal) until a photo is added |
+| App colours | Six themes selectable in Settings: Sunrise (default), Ocean, Forest, Royal, Rose, Night |
 | Typography | Baloo 2 (headings), Nunito (body); both on Google Fonts and usable in Android |
 | Shapes | Rounded cards (22 dp radius), pill buttons, bottom navigation with a raised centre "+" button |
 | Emoji | One emoji per request type and per action (👍 On it, ✅ Done, 💬 WhatsApp, 🎉 completed) |
