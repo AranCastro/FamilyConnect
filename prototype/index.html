@@ -1,0 +1,635 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- Generated from app.html by build.sh: edit app.html, then run ./build.sh -->
+<title>FamilyConnect</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="theme-color" content="#14504a">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Hind:wght@400;500;600&display=swap">
+<style>
+/* Layout: one-column phone app — sticky family header, scrolling feed, fixed bottom tab bar, floating "+" button. */
+:root {
+  --bg: #f3f6f4;
+  --surface: #ffffff;
+  --ink: #17302d;
+  --muted: #5d716d;
+  --line: #dbe4e0;
+  --brand: #14504a;          /* deep teal: header, primary buttons */
+  --brand-ink: #ffffff;
+  --tab-on: #14504a;
+  --accent: #e8a020;         /* marigold: "+" button, new-tag pill */
+  --accent-ink: #2a1a00;
+  --t-grocery: #2f7d4a; --t-grocery-bg: #e3f2e7;
+  --t-pickup: #2b5fa8;  --t-pickup-bg: #e2ebf8;
+  --t-med: #b23a5b;     --t-med-bg: #f8e3ea;
+  --t-rem: #8a5a00;     --t-rem-bg: #fbefd6;
+  --ok: #2f7d4a; --warn: #a86800; --bad: #b3261e;
+  --shadow: 0 1px 2px rgba(20,60,55,.08), 0 4px 14px rgba(20,60,55,.06);
+  --f-display: "Baloo 2", "Trebuchet MS", system-ui, sans-serif;
+  --f-body: "Hind", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0f1716; --surface: #18221f; --ink: #e4ece9; --muted: #9db0ab; --line: #2a3835;
+  --brand: #1f6d64; --brand-ink: #ffffff; --tab-on: #f0b240; --accent: #f0b240; --accent-ink: #2a1a00;
+  --t-grocery: #7fcf98; --t-grocery-bg: #1d3325; --t-pickup: #8fb6f0; --t-pickup-bg: #1c2a3f;
+  --t-med: #f09ab2; --t-med-bg: #3a1f28; --t-rem: #f2c46a; --t-rem-bg: #362a12;
+  --ok: #7fcf98; --warn: #f2c46a; --bad: #ff8a80; --shadow: 0 1px 2px rgba(0,0,0,.4);
+  color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0f1716; --surface: #18221f; --ink: #e4ece9; --muted: #9db0ab; --line: #2a3835;
+  --brand: #1f6d64; --brand-ink: #ffffff; --tab-on: #f0b240; --accent: #f0b240; --accent-ink: #2a1a00;
+  --t-grocery: #7fcf98; --t-grocery-bg: #1d3325; --t-pickup: #8fb6f0; --t-pickup-bg: #1c2a3f;
+  --t-med: #f09ab2; --t-med-bg: #3a1f28; --t-rem: #f2c46a; --t-rem-bg: #362a12;
+  --ok: #7fcf98; --warn: #f2c46a; --bad: #ff8a80; --shadow: 0 1px 2px rgba(0,0,0,.4);
+  color-scheme: dark; }
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font: 16px/1.5 var(--f-body); margin: 0; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--brand); }
+h1, h2, h3 { font-family: var(--f-display); line-height: 1.15; text-wrap: balance; margin: 0; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.wrap { max-width: 640px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+
+/* Header */
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--brand); color: var(--brand-ink); }
+.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-block: 12px; flex-wrap: wrap; }
+.top h1 { font-size: 1.45rem; }
+.top small { opacity: .8; font-size: .85rem; }
+.who { display: flex; align-items: center; gap: 8px; font-size: .85rem; }
+.who select { background: rgba(255,255,255,.14); color: var(--brand-ink); border: 1px solid rgba(255,255,255,.35); border-radius: 999px; padding: 6px 12px; }
+.who select option { color: #17302d; background: #fff; }
+
+main.wrap { padding-block: 16px 120px; display: grid; gap: 18px; }
+.section-h { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.section-h h2 { font-size: 1.2rem; }
+.section-h small, .meta { color: var(--muted); font-size: .85rem; }
+.empty { color: var(--muted); padding: 14px; border: 1px dashed var(--line); border-radius: 12px; text-align: center; }
+
+.summary { display: flex; gap: 8px; flex-wrap: wrap; }
+.stat { background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; font-size: .9rem; font-variant-numeric: tabular-nums; }
+.stat b { font-weight: 600; }
+.stat.bad b { color: var(--bad); }
+
+/* Timeline (today) */
+.timeline { list-style: none; margin: 0; padding: 0; background: var(--surface); border-radius: 14px; box-shadow: var(--shadow); }
+.tl { display: grid; grid-template-columns: 4.6rem 1fr auto; gap: 10px; align-items: center; padding: 12px 14px; border-top: 1px solid var(--line); }
+.tl:first-child { border-top: 0; }
+.tl time { font-variant-numeric: tabular-nums; font-weight: 600; color: var(--muted); font-size: .92rem; }
+.tl > div { min-width: 0; }
+.tl small { color: var(--muted); }
+.tl.missed time, .tl.overdue time { color: var(--bad); }
+.tl.taken, .tl.done { opacity: .6; }
+
+/* Cards */
+.cards { display: grid; gap: 12px; }
+.card { background: var(--surface); border-radius: 14px; box-shadow: var(--shadow); padding: 14px; display: grid; gap: 10px; }
+.card-h { display: flex; gap: 10px; align-items: flex-start; justify-content: space-between; }
+.card-h > div { min-width: 0; }
+.card h3 { font-size: 1.12rem; overflow-wrap: anywhere; }
+.card p { margin: 0; overflow-wrap: anywhere; }
+.card.is-done { opacity: .62; }
+.type { display: inline-flex; align-items: center; gap: 4px; font-size: .74rem; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; padding: 2px 8px; border-radius: 999px; }
+.type.grocery { color: var(--t-grocery); background: var(--t-grocery-bg); }
+.type.pickup { color: var(--t-pickup); background: var(--t-pickup-bg); }
+.type.medicine { color: var(--t-med); background: var(--t-med-bg); }
+.type.reminder { color: var(--t-rem); background: var(--t-rem-bg); }
+.pill-new { background: var(--accent); color: var(--accent-ink); font-size: .72rem; font-weight: 700; padding: 1px 8px; border-radius: 999px; letter-spacing: .04em; }
+.when { font-size: .88rem; color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.when.overdue { color: var(--bad); font-weight: 600; }
+.people { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: .86rem; color: var(--muted); }
+.av { display: inline-flex; align-items: center; gap: 4px; padding: 1px 9px 1px 3px; border-radius: 999px; background: var(--bg); border: 1px solid var(--line); color: var(--ink); font-size: .85rem; white-space: nowrap; }
+.av i { font-style: normal; display: inline-grid; place-items: center; width: 1.45em; height: 1.45em; border-radius: 50%; background: var(--surface); }
+.av.acked { border-color: var(--ok); }
+.note { background: var(--bg); border-radius: 8px; padding: 6px 10px; font-size: .92rem; }
+
+.checklist { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.checklist li { display: flex; justify-content: space-between; gap: 8px; align-items: center; }
+.checklist label { display: flex; gap: 8px; align-items: center; min-width: 0; padding: 3px 0; }
+.checklist input { width: 1.15rem; height: 1.15rem; accent-color: var(--t-grocery); }
+.checklist .got span { text-decoration: line-through; color: var(--muted); }
+.checklist small { color: var(--muted); font-size: .78rem; white-space: nowrap; }
+.inline-add { display: flex; gap: 6px; }
+.inline-add input { flex: 1; min-width: 0; }
+
+.doses { display: flex; flex-wrap: wrap; gap: 6px; }
+.dose { border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 5px 10px; font-size: .88rem; font-variant-numeric: tabular-nums; }
+.dose.taken { border-color: var(--ok); color: var(--ok); cursor: default; }
+.dose.missed { border-color: var(--bad); color: var(--bad); }
+.dose.due { border-color: var(--warn); color: var(--warn); font-weight: 600; }
+
+.actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.btn { border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 6px 12px; font-size: .9rem; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; color: var(--ink); }
+.btn:hover { border-color: var(--brand); }
+.btn.primary { background: var(--brand); color: var(--brand-ink); border-color: var(--brand); }
+.btn.ok { border-color: var(--ok); color: var(--ok); }
+.btn.danger { color: var(--bad); }
+.btn.small { padding: 3px 10px; font-size: .85rem; }
+input[type="text"], input[type="datetime-local"], input[type="date"], input[type="time"], input:not([type]), select, textarea {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; width: 100%; }
+
+.filters { display: flex; gap: 6px; flex-wrap: wrap; }
+.filters button { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 4px 12px; font-size: .88rem; }
+.filters button[aria-pressed="true"] { background: var(--brand); color: var(--brand-ink); border-color: var(--brand); }
+
+.panel { background: var(--surface); border-radius: 14px; box-shadow: var(--shadow); padding: 14px; display: grid; gap: 12px; }
+.member-row { display: flex; align-items: center; gap: 10px; justify-content: space-between; border-top: 1px solid var(--line); padding-top: 10px; }
+.member-row:first-child { border-top: 0; padding-top: 0; }
+.member-row .big { font-size: 1.6rem; }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
+label.f { display: grid; gap: 4px; font-size: .88rem; color: var(--muted); }
+label.f > span { font-weight: 500; }
+
+/* Tab bar + FAB */
+.tabs { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; background: var(--surface); border-top: 1px solid var(--line); padding-bottom: env(safe-area-inset-bottom, 0px); padding-left: max(8px, env(safe-area-inset-left, 0px)); padding-right: max(8px, env(safe-area-inset-right, 0px)); }
+.tabs .row { max-width: 640px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); }
+.tabs button { background: none; border: 0; padding: 8px 4px 10px; display: grid; justify-items: center; gap: 1px; color: var(--muted); font-size: .78rem; position: relative; }
+.tabs button .ic { font-size: 1.25rem; line-height: 1.2; }
+.tabs button[aria-current="page"] { color: var(--tab-on); font-weight: 600; }
+.badge { position: absolute; top: 4px; left: calc(50% + 8px); background: var(--accent); color: var(--accent-ink); font-size: .7rem; font-weight: 700; min-width: 1.3em; height: 1.3em; border-radius: 999px; display: grid; place-items: center; padding: 0 4px; }
+.fab { position: fixed; right: calc(18px + env(safe-area-inset-right, 0px)); bottom: calc(76px + env(safe-area-inset-bottom, 0px)); z-index: 7; width: 58px; height: 58px; border-radius: 50%; border: 0; background: var(--accent); color: var(--accent-ink); font-size: 2rem; line-height: 1; box-shadow: 0 6px 18px rgba(0,0,0,.22); }
+
+/* Composer sheet */
+dialog { border: 0; padding: 0; width: min(560px, 100%); max-height: 92vh; border-radius: 18px 18px 0 0; margin: auto auto 0; background: var(--surface); color: var(--ink); }
+@media (min-width: 600px) { dialog { border-radius: 18px; margin: auto; } }
+dialog::backdrop { background: rgba(10,25,23,.5); }
+dialog form { padding: 18px max(16px, env(safe-area-inset-left, 0px)) calc(18px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 14px; }
+.types { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.types button { border: 1px solid var(--line); background: var(--bg); border-radius: 12px; padding: 8px 2px; display: grid; justify-items: center; font-size: .78rem; }
+.types button .ic { font-size: 1.4rem; }
+.types button[aria-pressed="true"] { border-color: var(--brand); background: var(--surface); box-shadow: inset 0 0 0 1px var(--brand); font-weight: 600; }
+fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: 6px; }
+legend { font-size: .88rem; color: var(--muted); font-weight: 500; padding: 0; margin-bottom: 4px; }
+.tagger { display: flex; flex-wrap: wrap; gap: 6px; }
+.tagger label { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px 4px 8px; font-size: .9rem; cursor: pointer; }
+.tagger input { accent-color: var(--brand); }
+.tagger label:has(input:checked) { border-color: var(--brand); background: var(--bg); }
+.row-end { display: flex; justify-content: flex-end; gap: 8px; }
+
+.toasts { position: fixed; left: 0; right: 0; top: calc(70px + env(safe-area-inset-top, 0px)); z-index: 20; display: grid; justify-items: center; gap: 8px; pointer-events: none; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.toast { background: var(--ink); color: var(--bg); border-radius: 12px; padding: 10px 14px; max-width: 520px; box-shadow: var(--shadow); font-size: .93rem; animation: in .25s ease-out; }
+@keyframes in { from { transform: translateY(-8px); opacity: .3; } }
+@media (prefers-reduced-motion: reduce) { .toast { animation: none; } }
+.demo-note { font-size: .82rem; color: var(--muted); text-align: center; }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <div>
+      <h1 id="familyName">FamilyConnect</h1>
+      <small id="subtitle"></small>
+    </div>
+    <label class="who" for="whoSelect">Acting as <select id="whoSelect"></select></label>
+  </div>
+</header>
+
+<main id="view" class="wrap" aria-live="polite"></main>
+
+<button id="fab" class="fab" type="button" aria-label="Create a new list, pickup, medicine or reminder">+</button>
+
+<nav class="tabs" aria-label="Sections">
+  <div class="row">
+    <button type="button" data-tab="today" aria-current="page"><span class="ic">📅</span>Today</button>
+    <button type="button" data-tab="mine"><span class="ic">🙋</span>For me<b id="mineBadge" class="badge" hidden></b></button>
+    <button type="button" data-tab="family"><span class="ic">🏠</span>Family</button>
+    <button type="button" data-tab="members"><span class="ic">👪</span>Members</button>
+  </div>
+</nav>
+
+<dialog id="composer" aria-labelledby="composerTitle">
+  <form id="createForm" novalidate>
+    <h2 id="composerTitle">Create and tag</h2>
+    <div class="types" id="typePicker" role="group" aria-label="What do you need?"></div>
+    <div id="typeFields" style="display:grid;gap:12px"></div>
+    <fieldset>
+      <legend id="tagLegend">Tag family members (they get the reminder)</legend>
+      <div class="tagger" id="tagger"></div>
+    </fieldset>
+    <label class="f" for="f-notes"><span>Note (optional)</span><textarea id="f-notes" name="notes" rows="2" placeholder="e.g. Use the Amul brand, not the store brand"></textarea></label>
+    <div class="row-end">
+      <button type="button" class="btn" id="cancelCreate">Cancel</button>
+      <button type="submit" class="btn primary">Create and notify</button>
+    </div>
+  </form>
+</dialog>
+
+<div id="toasts" class="toasts" role="status"></div>
+
+<script>
+'use strict';
+/* FamilyConnect prototype — all data stays in this browser (localStorage). */
+const STORE_KEY = 'familyconnect.prototype.v1';
+const RELATIONS = ['Father','Mother','Husband','Wife','Son','Daughter','Grandfather','Grandmother','Brother','Sister','Uncle','Aunt','Other'];
+const EMOJIS = ['👨','👩','👧','👦','👴','👵','🧑','👶','🧔','👱‍♀️'];
+const TYPES = {
+  grocery:  { label: 'Grocery',  icon: '🛒', long: 'Grocery list' },
+  pickup:   { label: 'Pickup',   icon: '🚗', long: 'Pickup / drop' },
+  medicine: { label: 'Medicine', icon: '💊', long: 'Medicine' },
+  reminder: { label: 'Reminder', icon: '⏰', long: 'Reminder' },
+};
+
+const uid = () => Math.random().toString(36).slice(2, 10);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+const pad = n => String(n).padStart(2, '0');
+const dayKey = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const toLocalInput = d => `${dayKey(d)}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+const $ = sel => document.querySelector(sel);
+
+/* ---------- Example family (shown on first open) ---------- */
+function seed() {
+  const now = new Date();
+  const at = (h, m, add = 0) => { const d = new Date(now); d.setDate(d.getDate() + add); d.setHours(h, m, 0, 0); return d.toISOString(); };
+  const iso = new Date().toISOString();
+  return {
+    familyName: 'The Sharma Family (example)',
+    currentId: 'm2',
+    members: [
+      { id: 'm1', name: 'Ravi',   relation: 'Husband',     emoji: '👨' },
+      { id: 'm2', name: 'Priya',  relation: 'Wife',        emoji: '👩' },
+      { id: 'm3', name: 'Anu',    relation: 'Daughter',    emoji: '👧' },
+      { id: 'm4', name: 'Kiran',  relation: 'Son',         emoji: '👦' },
+      { id: 'm5', name: 'Dadaji', relation: 'Grandfather', emoji: '👴' },
+    ],
+    items: [
+      { id: 'i1', type: 'grocery', title: 'Weekly groceries', createdBy: 'm2', assignees: ['m1'], ack: [], status: 'open', createdAt: iso,
+        due: at(19, 0), notes: 'Pick up on the way back from office',
+        list: [
+          { id: 'l1', text: 'Atta 5 kg', done: false }, { id: 'l2', text: 'Toor dal 1 kg', done: true, doneBy: 'm1' },
+          { id: 'l3', text: 'Milk 2 L', done: false }, { id: 'l4', text: 'Tomatoes 1 kg', done: false }, { id: 'l5', text: 'Coriander', done: false } ] },
+      { id: 'i2', type: 'pickup', title: 'Pick Anu up from college', createdBy: 'm3', assignees: ['m1', 'm4'], ack: ['m4'], status: 'open', createdAt: iso,
+        due: at(16, 30), person: 'm3', location: 'College main gate', notes: 'Lab ends late today' },
+      { id: 'i3', type: 'medicine', title: 'Amlodipine 5 mg (BP)', createdBy: 'm2', assignees: ['m2', 'm4'], ack: ['m2'], status: 'open', createdAt: iso,
+        forMember: 'm5', dose: '1 tablet after food', times: ['08:00', '20:00'], startDate: dayKey(now), endDate: '', taken: { [`${dayKey(now)}_08:00`]: 'm5' } },
+      { id: 'i4', type: 'medicine', title: 'Vitamin D3', createdBy: 'm2', assignees: ['m2'], ack: [], status: 'open', createdAt: iso,
+        forMember: 'm5', dose: '1 sachet in milk', times: ['13:00'], startDate: dayKey(now), endDate: '', taken: {} },
+      { id: 'i5', type: 'reminder', title: 'Pay electricity bill', createdBy: 'm1', assignees: ['m2'], ack: [], status: 'open', createdAt: iso,
+        due: at(11, 0, 1), notes: 'Consumer no. is on the fridge' },
+      { id: 'i6', type: 'reminder', title: 'Kiran: parent–teacher meeting', createdBy: 'm4', assignees: ['m1', 'm2'], ack: [], status: 'open', createdAt: iso,
+        due: at(10, 0, 2), notes: 'Bring the report card' },
+    ],
+    notified: {},
+  };
+}
+
+function load() {
+  try { const s = JSON.parse(localStorage.getItem(STORE_KEY)); if (s && Array.isArray(s.members) && s.members.length) return s; } catch (e) {}
+  return seed();
+}
+let state = load();
+function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {} }
+function commit() { save(); render(); }
+
+let tab = 'today';
+let familyFilter = 'all';
+let createType = 'grocery';
+
+/* ---------- Helpers ---------- */
+const member = id => state.members.find(m => m.id === id);
+const nameOf = id => member(id)?.name ?? 'Someone';
+const avatar = (id, acked = false) => {
+  const m = member(id); if (!m) return '';
+  return `<span class="av${acked ? ' acked' : ''}" title="${esc(m.relation)}${acked ? ' · on it' : ''}"><i>${esc(m.emoji)}</i>${esc(m.name)}${acked ? ' ✓' : ''}</span>`;
+};
+const fmtTime = d => d.toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit' });
+function fmtWhen(iso) {
+  const d = new Date(iso), t = new Date(); const tm = new Date(); tm.setDate(t.getDate() + 1);
+  const k = dayKey(d);
+  const day = k === dayKey(t) ? 'Today' : k === dayKey(tm) ? 'Tomorrow' : d.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' });
+  return `${day}, ${fmtTime(d)}`;
+}
+const doseDate = (day, t) => { const [h, m] = t.split(':').map(Number); const d = new Date(day); d.setHours(h, m, 0, 0); return d; };
+const medActive = (it, day) => { const k = dayKey(day); return k >= it.startDate && (!it.endDate || k <= it.endDate); };
+function doseStatus(it, day, t) {
+  const by = it.taken[`${dayKey(day)}_${t}`];
+  if (by) return { s: 'taken', by };
+  const diff = Date.now() - doseDate(day, t).getTime();
+  if (diff > 30 * 60000) return { s: 'missed' };
+  if (diff >= 0) return { s: 'due' };
+  return { s: 'upcoming' };
+}
+const isOverdue = it => it.type !== 'medicine' && it.due && it.status === 'open' && new Date(it.due) < new Date();
+const involvesMe = it => it.assignees.includes(state.currentId) || (it.type === 'medicine' && it.forMember === state.currentId);
+const unseenForMe = () => state.items.filter(it => it.status === 'open' && it.assignees.includes(state.currentId) && !it.ack.includes(state.currentId));
+
+function shareText(it) {
+  const T = TYPES[it.type];
+  let s = `${T.icon} ${it.title}`;
+  if (it.due) s += `\nWhen: ${fmtWhen(it.due)}`;
+  if (it.type === 'grocery') s += '\n' + it.list.filter(x => !x.done).map(x => `• ${x.text}`).join('\n');
+  if (it.type === 'pickup' && it.location) s += `\nWhere: ${it.location}`;
+  if (it.type === 'medicine') s += `\nFor: ${nameOf(it.forMember)} · ${it.dose} · ${it.times.join(', ')}`;
+  if (it.notes) s += `\nNote: ${it.notes}`;
+  return s + `\n— ${nameOf(it.createdBy)} via FamilyConnect`;
+}
+
+/* ---------- Card ---------- */
+function card(it) {
+  const T = TYPES[it.type];
+  const mine = it.assignees.includes(state.currentId);
+  const isNew = mine && it.status === 'open' && !it.ack.includes(state.currentId);
+  const over = isOverdue(it);
+  let body = '';
+  if (it.type === 'grocery') {
+    const got = it.list.filter(x => x.done).length;
+    body = `<ul class="checklist">${it.list.map(x => `
+        <li class="${x.done ? 'got' : ''}"><label><input type="checkbox" data-action="toggle-line" data-id="${it.id}" data-line="${x.id}" ${x.done ? 'checked' : ''}><span>${esc(x.text)}</span></label>
+        ${x.done && x.doneBy ? `<small>✓ ${esc(nameOf(x.doneBy))}</small>` : ''}</li>`).join('')}</ul>
+      <form class="inline-add" data-form="add-line" data-id="${it.id}">
+        <input id="add-${it.id}" name="line" placeholder="Add an item…" aria-label="Add an item to ${esc(it.title)}">
+        <button class="btn small">Add</button></form>
+      <p class="meta">${got} of ${it.list.length} picked up</p>`;
+  } else if (it.type === 'pickup') {
+    body = `<p>📍 ${esc(it.location || 'Location not set')}${it.person ? ` · pick up ${avatar(it.person)}` : ''}</p>`;
+  } else if (it.type === 'medicine') {
+    const today = new Date();
+    body = `<p>For ${avatar(it.forMember)} · ${esc(it.dose || '')}</p>
+      <div class="doses">${medActive(it, today) ? it.times.map(t => {
+        const st = doseStatus(it, today, t);
+        const label = st.s === 'taken' ? `✓ ${esc(nameOf(st.by))}` : st.s === 'missed' ? 'missed' : st.s === 'due' ? 'due now' : 'upcoming';
+        return `<button type="button" class="dose ${st.s}" data-action="take" data-id="${it.id}" data-time="${t}" ${st.s === 'taken' ? 'disabled' : ''} title="Mark this dose as taken">${fmtTime(doseDate(today, t))} · ${label}</button>`;
+      }).join('') : '<small class="meta">Not scheduled today</small>'}</div>`;
+  }
+  const actions = [];
+  if (isNew) actions.push(`<button type="button" class="btn primary small" data-action="ack" data-id="${it.id}">👍 On it</button>`);
+  if (it.type !== 'medicine' && it.status === 'open') actions.push(`<button type="button" class="btn ok small" data-action="done" data-id="${it.id}">✓ Mark done</button>`);
+  if (it.type !== 'medicine' && it.status === 'done') actions.push(`<button type="button" class="btn small" data-action="reopen" data-id="${it.id}">Reopen</button>`);
+  actions.push(`<a class="btn small" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(shareText(it))}">Share on WhatsApp</a>`);
+  if (it.createdBy === state.currentId) actions.push(`<button type="button" class="btn danger small" data-action="delete" data-id="${it.id}">${it.type === 'medicine' ? 'Stop' : 'Delete'}</button>`);
+
+  return `<article class="card${it.status === 'done' ? ' is-done' : ''}">
+    <div class="card-h">
+      <div>
+        <span class="type ${it.type}">${T.icon} ${T.long}</span> ${isNew ? '<span class="pill-new">NEW</span>' : ''}
+        <h3>${esc(it.title)}</h3>
+      </div>
+      ${it.due ? `<span class="when${over ? ' overdue' : ''}">${over ? 'Overdue · ' : ''}${esc(fmtWhen(it.due))}</span>` : ''}
+    </div>
+    ${body}
+    ${it.notes ? `<p class="note">${esc(it.notes)}</p>` : ''}
+    <div class="people">From ${avatar(it.createdBy)} → ${it.assignees.length ? it.assignees.map(a => avatar(a, it.ack.includes(a))).join('') : '<span>nobody tagged</span>'}</div>
+    ${it.status === 'done' && it.doneBy ? `<p class="meta">Done by ${esc(nameOf(it.doneBy))}</p>` : ''}
+    <div class="actions">${actions.join('')}</div>
+  </article>`;
+}
+
+/* ---------- Views ---------- */
+function viewToday() {
+  const now = new Date(), tk = dayKey(now);
+  const rows = []; let missed = 0;
+  for (const it of state.items) {
+    if (it.type === 'medicine') {
+      if (!medActive(it, now)) continue;
+      for (const t of it.times) {
+        const st = doseStatus(it, now, t); if (st.s === 'missed') missed++;
+        const sub = st.s === 'taken' ? `Taken · marked by ${esc(nameOf(st.by))}` : st.s === 'missed' ? 'Missed · please check on them' : st.s === 'due' ? 'Due now' : 'Upcoming';
+        rows.push({ at: doseDate(now, t), html: `<li class="tl ${st.s}"><time>${fmtTime(doseDate(now, t))}</time>
+          <div>💊 <b>${esc(it.title)}</b> for ${avatar(it.forMember)}<br><small>${sub}</small></div>
+          ${st.s !== 'taken' ? `<button type="button" class="btn small" data-action="take" data-id="${it.id}" data-time="${t}">Taken</button>` : '<span></span>'}</li>` });
+      }
+      continue;
+    }
+    if (!it.due || it.status !== 'open') continue;
+    const d = new Date(it.due);
+    if (dayKey(d) !== tk && d > now) continue;
+    const over = d < now;
+    rows.push({ at: d, html: `<li class="tl${over ? ' overdue' : ''}"><time>${dayKey(d) === tk ? fmtTime(d) : d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}</time>
+      <div>${TYPES[it.type].icon} <b>${esc(it.title)}</b><br><small>${over ? 'Overdue · ' : ''}${it.assignees.map(nameOf).map(esc).join(', ') || 'nobody tagged'}</small></div>
+      <button type="button" class="btn ok small" data-action="done" data-id="${it.id}">Done</button></li>` });
+  }
+  rows.sort((a, b) => a.at - b.at);
+  const lists = state.items.filter(i => i.type === 'grocery' && i.status === 'open');
+  const forMe = unseenForMe().length;
+  const greet = now.getHours() < 12 ? 'Good morning' : now.getHours() < 17 ? 'Good afternoon' : 'Good evening';
+  return `
+    <div class="section-h"><h2>${greet}, ${esc(nameOf(state.currentId))}</h2><small>${now.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' })}</small></div>
+    <div class="summary">
+      <span class="stat"><b>${rows.length}</b> on today’s timeline</span>
+      <span class="stat${forMe ? ' bad' : ''}"><b>${forMe}</b> new tags for you</span>
+      <span class="stat${missed ? ' bad' : ''}"><b>${missed}</b> missed doses</span>
+    </div>
+    <section style="display:grid;gap:10px"><div class="section-h"><h2>Today’s timeline</h2><small>pickups · medicines · reminders</small></div>
+      ${rows.length ? `<ol class="timeline">${rows.map(r => r.html).join('')}</ol>` : '<p class="empty">Nothing scheduled today. Tap + to add a pickup, medicine or reminder.</p>'}
+    </section>
+    <section style="display:grid;gap:10px"><div class="section-h"><h2>Open shopping lists</h2><small>${lists.length}</small></div>
+      ${lists.length ? `<div class="cards">${lists.map(card).join('')}</div>` : '<p class="empty">No open lists.</p>'}
+    </section>
+    <p class="demo-note">Prototype: data stays in this browser only. Use “Acting as” at the top to see the app as each family member.</p>`;
+}
+
+function sortItems(arr) {
+  return arr.slice().sort((a, b) => (a.status === 'done') - (b.status === 'done') || (a.due ? new Date(a.due) : Infinity) - (b.due ? new Date(b.due) : Infinity));
+}
+function viewMine() {
+  const tagged = sortItems(state.items.filter(involvesMe));
+  const mine = sortItems(state.items.filter(it => it.createdBy === state.currentId && !involvesMe(it)));
+  return `
+    <section style="display:grid;gap:10px"><div class="section-h"><h2>Tagged to ${esc(nameOf(state.currentId))}</h2><small>${tagged.filter(i => i.status === 'open').length} open</small></div>
+      ${tagged.length ? `<div class="cards">${tagged.map(card).join('')}</div>` : '<p class="empty">Nobody has tagged you yet.</p>'}</section>
+    <section style="display:grid;gap:10px"><div class="section-h"><h2>Requests you sent</h2><small>see who said “on it”</small></div>
+      ${mine.length ? `<div class="cards">${mine.map(card).join('')}</div>` : '<p class="empty">You have not tagged anyone yet. Tap + to ask for help.</p>'}</section>`;
+}
+function viewFamily() {
+  const items = sortItems(state.items.filter(i => familyFilter === 'all' || i.type === familyFilter));
+  const btn = (k, l) => `<button type="button" data-filter="${k}" aria-pressed="${familyFilter === k}">${l}</button>`;
+  return `
+    <div class="section-h"><h2>Everything in the family</h2><small>${state.items.length} items</small></div>
+    <div class="filters">${btn('all', 'All')}${Object.entries(TYPES).map(([k, t]) => btn(k, `${t.icon} ${t.label}`)).join('')}</div>
+    ${items.length ? `<div class="cards">${items.map(card).join('')}</div>` : '<p class="empty">Nothing here yet.</p>'}`;
+}
+function viewMembers() {
+  return `
+    <div class="section-h"><h2>Family members</h2><small>${state.members.length}</small></div>
+    <div class="panel">${state.members.map(m => `
+      <div class="member-row"><div style="display:flex;gap:10px;align-items:center;min-width:0"><span class="big">${esc(m.emoji)}</span>
+        <div><b>${esc(m.name)}</b>${m.id === state.currentId ? ' <small class="meta">(you)</small>' : ''}<br><small class="meta">${esc(m.relation)}</small></div></div>
+        <div class="actions"><button type="button" class="btn small" data-action="switch" data-id="${m.id}">Act as</button>
+        ${state.members.length > 1 ? `<button type="button" class="btn small danger" data-action="remove-member" data-id="${m.id}">Remove</button>` : ''}</div></div>`).join('')}
+    </div>
+    <form class="panel" data-form="add-member">
+      <h3>Add a member</h3>
+      <div class="grid2">
+        <label class="f" for="nm-name"><span>Name</span><input id="nm-name" name="name" required placeholder="e.g. Meena"></label>
+        <label class="f" for="nm-rel"><span>Relation</span><select id="nm-rel" name="relation">${RELATIONS.map(r => `<option>${r}</option>`).join('')}</select></label>
+        <label class="f" for="nm-emoji"><span>Picture</span><select id="nm-emoji" name="emoji">${EMOJIS.map(e => `<option>${e}</option>`).join('')}</select></label>
+      </div>
+      <div class="row-end"><button class="btn primary">Add member</button></div>
+    </form>
+    <form class="panel" data-form="settings">
+      <h3>Family settings</h3>
+      <label class="f" for="fam-name"><span>Family name</span><input id="fam-name" name="familyName" value="${esc(state.familyName)}"></label>
+      <div class="actions"><button class="btn primary">Save name</button>
+        <button type="button" class="btn" data-action="notif">Allow phone notifications</button>
+        <button type="button" class="btn danger" data-action="reset" id="resetBtn">Reset example data</button></div>
+      <p class="meta">In the real app, family members join with their mobile number and an invite code, and reminders arrive as push notifications even when the app is closed.</p>
+    </form>`;
+}
+
+function render() {
+  if (!member(state.currentId)) state.currentId = state.members[0].id;
+  $('#familyName').textContent = state.familyName;
+  $('#subtitle').textContent = `${state.members.length} members · ${state.items.filter(i => i.status === 'open').length} open items`;
+  $('#whoSelect').innerHTML = state.members.map(m => `<option value="${m.id}" ${m.id === state.currentId ? 'selected' : ''}>${esc(m.emoji)} ${esc(m.name)} (${esc(m.relation)})</option>`).join('');
+  const n = unseenForMe().length; const b = $('#mineBadge'); b.hidden = !n; b.textContent = n;
+  document.querySelectorAll('.tabs button').forEach(x => x.dataset.tab === tab ? x.setAttribute('aria-current', 'page') : x.removeAttribute('aria-current'));
+  $('#view').innerHTML = { today: viewToday, mine: viewMine, family: viewFamily, members: viewMembers }[tab]();
+}
+
+/* ---------- Toasts and reminders ---------- */
+function toast(msg) {
+  const el = document.createElement('div'); el.className = 'toast'; el.textContent = msg;
+  $('#toasts').appendChild(el); setTimeout(() => el.remove(), 4200);
+}
+function notify(title, body) {
+  toast(`🔔 ${title}: ${body}`);
+  try { if ('Notification' in window && Notification.permission === 'granted') new Notification(title, { body }); } catch (e) {}
+}
+/* Checks every 20 s whether anything tagged to the current member is due. Pickups alert 15 min early. */
+function tick() {
+  const now = new Date(), me = state.currentId; let changed = false;
+  for (const it of state.items) {
+    if (it.type === 'medicine') {
+      if (!medActive(it, now) || !(it.assignees.includes(me) || it.forMember === me)) continue;
+      for (const t of it.times) {
+        const due = doseDate(now, t), key = `${it.id}_${dayKey(now)}_${t}_${me}`;
+        if (now >= due && now - due < 3600000 && !it.taken[`${dayKey(now)}_${t}`] && !state.notified[key]) {
+          state.notified[key] = 1; changed = true;
+          notify(`Medicine for ${nameOf(it.forMember)}`, `${it.title}, ${it.dose} (${fmtTime(due)})`);
+        }
+      }
+    } else if (it.due && it.status === 'open' && it.assignees.includes(me)) {
+      const due = new Date(it.due), lead = it.type === 'pickup' ? 15 * 60000 : 0, key = `${it.id}_${me}`;
+      if (now >= due - lead && now - due < 3600000 && !state.notified[key]) {
+        state.notified[key] = 1; changed = true;
+        notify(TYPES[it.type].long, `${it.title} at ${fmtTime(due)}`);
+      }
+    }
+  }
+  if (changed) save();
+  const typing = document.activeElement && $('#view').contains(document.activeElement) && document.activeElement.matches('input,select,textarea');
+  if (!typing && !$('#composer').open) render();
+}
+
+/* ---------- Composer ---------- */
+function memberOptions(sel) { return state.members.map(m => `<option value="${m.id}" ${m.id === sel ? 'selected' : ''}>${esc(m.emoji)} ${esc(m.name)}</option>`).join(''); }
+function inHours(h) { const d = new Date(Date.now() + h * 3600000); d.setMinutes(Math.ceil(d.getMinutes() / 15) * 15, 0, 0); return toLocalInput(d); }
+function typeFields(type) {
+  const f = (id, label, input) => `<label class="f" for="${id}"><span>${label}</span>${input}</label>`;
+  switch (type) {
+    case 'grocery': return `
+      ${f('f-title', 'List name', '<input id="f-title" name="title" value="Grocery list">')}
+      ${f('f-items', 'Items (one per line)', '<textarea id="f-items" name="items" rows="4" required placeholder="Milk 1 L&#10;Eggs 12&#10;Onions 1 kg"></textarea>')}
+      ${f('f-due', 'Needed by (optional)', `<input id="f-due" type="datetime-local" name="due" value="${inHours(4)}">`)}`;
+    case 'pickup': return `
+      <div class="grid2">
+        ${f('f-person', 'Who needs a pickup?', `<select id="f-person" name="person">${memberOptions(state.currentId)}</select>`)}
+        ${f('f-due', 'When', `<input id="f-due" type="datetime-local" name="due" required value="${inHours(2)}">`)}
+      </div>
+      ${f('f-loc', 'From where', '<input id="f-loc" name="location" required placeholder="e.g. College main gate">')}`;
+    case 'medicine': return `
+      <div class="grid2">
+        ${f('f-for', 'Medicine for', `<select id="f-for" name="forMember">${memberOptions(state.members.find(m => /Grand/.test(m.relation))?.id || state.currentId)}</select>`)}
+        ${f('f-med', 'Medicine name', '<input id="f-med" name="title" required placeholder="e.g. Metformin 500 mg">')}
+      </div>
+      ${f('f-dose', 'Dose', '<input id="f-dose" name="dose" placeholder="e.g. 1 tablet after breakfast">')}
+      <div class="grid2">
+        ${f('f-t1', 'Time 1', '<input id="f-t1" type="time" name="time" value="08:00" required>')}
+        ${f('f-t2', 'Time 2 (optional)', '<input id="f-t2" type="time" name="time" value="">')}
+        ${f('f-t3', 'Time 3 (optional)', '<input id="f-t3" type="time" name="time" value="">')}
+        ${f('f-end', 'Until (optional)', '<input id="f-end" type="date" name="endDate">')}
+      </div>`;
+    default: return `
+      ${f('f-title', 'Remind about', '<input id="f-title" name="title" required placeholder="e.g. Pay school fees">')}
+      ${f('f-due', 'When', `<input id="f-due" type="datetime-local" name="due" required value="${inHours(3)}">`)}`;
+  }
+}
+function openComposer(type = createType) {
+  createType = type;
+  $('#typePicker').innerHTML = Object.entries(TYPES).map(([k, t]) => `<button type="button" data-type="${k}" aria-pressed="${k === type}"><span class="ic">${t.icon}</span>${t.label}</button>`).join('');
+  $('#typeFields').innerHTML = typeFields(type);
+  $('#tagLegend').textContent = type === 'medicine' ? 'Tag caregivers (they are alerted if a dose is missed)' : 'Tag family members (they get the reminder)';
+  const checked = new Set([...document.querySelectorAll('#tagger input:checked')].map(i => i.value));
+  $('#tagger').innerHTML = state.members.filter(m => m.id !== state.currentId || type === 'medicine').map(m =>
+    `<label for="tag-${m.id}"><input type="checkbox" id="tag-${m.id}" name="assign" value="${m.id}" ${checked.has(m.id) ? 'checked' : ''}>${esc(m.emoji)} ${esc(m.name)} <small class="meta">${esc(m.relation)}</small></label>`).join('');
+  if (!$('#composer').open) { $('#f-notes').value = ''; $('#composer').showModal(); }
+}
+function submitComposer(e) {
+  e.preventDefault();
+  const form = e.target, fd = new FormData(form);
+  const missing = [...form.querySelectorAll('[required]')].find(i => !i.value.trim());
+  if (missing) { missing.focus(); toast(`Please fill in “${missing.closest('label').querySelector('span').textContent}”.`); return; }
+  const assignees = fd.getAll('assign');
+  if (createType !== 'medicine' && !assignees.length) { toast('Tag at least one family member so someone gets the reminder.'); return; }
+  const base = { id: uid(), type: createType, createdBy: state.currentId, assignees, ack: [], status: 'open', createdAt: new Date().toISOString(), notes: (fd.get('notes') || '').trim() };
+  const due = fd.get('due') ? new Date(fd.get('due')).toISOString() : null;
+  let it;
+  if (createType === 'grocery') it = { ...base, title: fd.get('title').trim() || 'Grocery list', due, list: fd.get('items').split('\n').map(s => s.trim()).filter(Boolean).map(text => ({ id: uid(), text, done: false })) };
+  if (createType === 'pickup') { const p = fd.get('person'); it = { ...base, title: `Pick ${nameOf(p)} up from ${fd.get('location').trim()}`, person: p, location: fd.get('location').trim(), due }; }
+  if (createType === 'medicine') it = { ...base, title: fd.get('title').trim(), forMember: fd.get('forMember'), dose: fd.get('dose').trim(), times: [...new Set(fd.getAll('time').filter(Boolean))].sort(), startDate: dayKey(new Date()), endDate: fd.get('endDate') || '', taken: {} };
+  if (createType === 'reminder') it = { ...base, title: fd.get('title').trim(), due };
+  if (it.type === 'medicine' && !it.ack.includes(state.currentId) && it.assignees.includes(state.currentId)) it.ack.push(state.currentId);
+  state.items.unshift(it);
+  $('#composer').close(); form.reset();
+  toast(assignees.length ? `Created. ${assignees.map(nameOf).join(', ')} ${assignees.length > 1 ? 'have' : 'has'} been tagged.` : 'Created.');
+  commit();
+}
+
+/* ---------- Events ---------- */
+let resetArmed = false;
+document.addEventListener('click', e => {
+  const tabBtn = e.target.closest('.tabs button'); if (tabBtn) { tab = tabBtn.dataset.tab; render(); window.scrollTo(0, 0); return; }
+  const filt = e.target.closest('[data-filter]'); if (filt) { familyFilter = filt.dataset.filter; render(); return; }
+  const typeBtn = e.target.closest('#typePicker [data-type]'); if (typeBtn) { openComposer(typeBtn.dataset.type); return; }
+  const b = e.target.closest('[data-action]'); if (!b) return;
+  const it = state.items.find(x => x.id === b.dataset.id);
+  switch (b.dataset.action) {
+    case 'ack': it.ack.push(state.currentId); toast(`${nameOf(it.createdBy)} will see that you are on it.`); break;
+    case 'done': it.status = 'done'; it.doneBy = state.currentId; if (!it.ack.includes(state.currentId) && it.assignees.includes(state.currentId)) it.ack.push(state.currentId); toast(`Marked done. ${nameOf(it.createdBy)} has been told.`); break;
+    case 'reopen': it.status = 'open'; delete it.doneBy; break;
+    case 'delete': state.items = state.items.filter(x => x !== it); toast('Removed.'); break;
+    case 'take': it.taken[`${dayKey(new Date())}_${b.dataset.time}`] = state.currentId; toast(`Dose recorded for ${nameOf(it.forMember)}.`); break;
+    case 'toggle-line': { const l = it.list.find(x => x.id === b.dataset.line); l.done = !l.done; l.doneBy = l.done ? state.currentId : undefined;
+      if (it.list.every(x => x.done) && it.status === 'open') { it.status = 'done'; it.doneBy = state.currentId; toast(`All items picked up. ${nameOf(it.createdBy)} has been told.`); } break; }
+    case 'switch': state.currentId = b.dataset.id; announceSwitch(); break;
+    case 'remove-member': { const id = b.dataset.id; state.members = state.members.filter(m => m.id !== id);
+      state.items.forEach(x => { x.assignees = x.assignees.filter(a => a !== id); x.ack = x.ack.filter(a => a !== id); }); break; }
+    case 'notif':
+      if (!('Notification' in window)) { toast('This browser does not support notifications. In-app alerts will still appear.'); return; }
+      Promise.resolve(Notification.requestPermission()).then(p => toast(p === 'granted' ? 'Notifications allowed.' : 'Notifications were not allowed here. In-app alerts will still appear.')).catch(() => toast('Notifications are blocked in this view. In-app alerts will still appear.'));
+      return;
+    case 'reset':
+      if (!resetArmed) { resetArmed = true; b.textContent = 'Tap again to confirm reset'; setTimeout(() => { resetArmed = false; if (b.isConnected) b.textContent = 'Reset example data'; }, 4000); return; }
+      resetArmed = false; state = seed(); tab = 'today'; toast('Example data restored.'); break;
+    default: return;
+  }
+  commit();
+});
+document.addEventListener('submit', e => {
+  const f = e.target;
+  if (f.id === 'createForm') return submitComposer(e);
+  e.preventDefault();
+  const fd = new FormData(f);
+  if (f.dataset.form === 'add-line') { const v = (fd.get('line') || '').trim(); if (!v) return; const it = state.items.find(x => x.id === f.dataset.id); it.list.push({ id: uid(), text: v, done: false }); it.status = 'open'; commit(); document.getElementById(`add-${it.id}`)?.focus(); }
+  if (f.dataset.form === 'add-member') { const name = (fd.get('name') || '').trim(); if (!name) { toast('Enter a name first.'); return; } state.members.push({ id: uid(), name, relation: fd.get('relation'), emoji: fd.get('emoji') }); toast(`${name} added to the family.`); commit(); }
+  if (f.dataset.form === 'settings') { state.familyName = (fd.get('familyName') || '').trim() || 'My Family'; toast('Family name saved.'); commit(); }
+});
+function announceSwitch() {
+  const n = unseenForMe().length;
+  toast(`Now acting as ${nameOf(state.currentId)}.${n ? ` ${n} new tag${n > 1 ? 's' : ''} waiting.` : ''}`);
+}
+$('#whoSelect').addEventListener('change', e => { state.currentId = e.target.value; announceSwitch(); commit(); tick(); });
+$('#fab').addEventListener('click', () => openComposer(tab === 'members' ? 'reminder' : createType));
+$('#cancelCreate').addEventListener('click', () => $('#composer').close());
+$('#createForm').addEventListener('submit', e => { e.stopPropagation(); submitComposer(e); });
+
+render();
+tick();
+setInterval(tick, 20000);
+</script>
+</body>
+</html>
