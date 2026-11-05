@@ -6,215 +6,273 @@
 <!-- Generated from app.html by build.sh: edit app.html, then run ./build.sh -->
 <title>FamilyConnect</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="theme-color" content="#14504a">
+<meta name="theme-color" content="#f0503f">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Hind:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap">
 <style>
-/* Layout: one-column phone app — sticky family header, scrolling feed, fixed bottom tab bar, floating "+" button. */
+/* Layout: Android-style single column. Sunrise gradient header with family avatars, colourful feed of cards,
+   bottom navigation with a raised centre "+" button. Each request type and each family member owns a colour. */
 :root {
-  --bg: #f3f6f4;
+  --bg: #f3f5fb;
   --surface: #ffffff;
-  --ink: #17302d;
-  --muted: #5d716d;
-  --line: #dbe4e0;
-  --brand: #14504a;          /* deep teal: header, primary buttons */
+  --surface-2: #f7f8fc;
+  --ink: #1b2030;
+  --muted: #687089;
+  --line: #e3e7f1;
+  --hero-a: #ff5f4d;          /* sunrise coral */
+  --hero-b: #ffa63d;          /* marigold */
+  --hero-ink: #ffffff;
+  --brand: #f0503f;           /* primary buttons */
   --brand-ink: #ffffff;
-  --tab-on: #14504a;
-  --accent: #e8a020;         /* marigold: "+" button, new-tag pill */
-  --accent-ink: #2a1a00;
-  --t-grocery: #2f7d4a; --t-grocery-bg: #e3f2e7;
-  --t-pickup: #2b5fa8;  --t-pickup-bg: #e2ebf8;
-  --t-med: #b23a5b;     --t-med-bg: #f8e3ea;
-  --t-rem: #8a5a00;     --t-rem-bg: #fbefd6;
-  --ok: #2f7d4a; --warn: #a86800; --bad: #b3261e;
-  --shadow: 0 1px 2px rgba(20,60,55,.08), 0 4px 14px rgba(20,60,55,.06);
+  --brand-soft: #ffe9e5;
+  --new: #ffcc33; --new-ink: #3a2a00;
+  /* request types */
+  --g: #18a35f; --g-bg: #e2f7ea;   /* grocery */
+  --p: #2f7ef0; --p-bg: #e3eeff;   /* pickup */
+  --m: #e2457b; --m-bg: #fde5ee;   /* medicine */
+  --r: #8458f2; --r-bg: #eee7ff;   /* reminder */
+  /* family member colours */
+  --c1: #2f7ef0; --c2: #e2457b; --c3: #f29d0b; --c4: #18a35f; --c5: #8458f2; --c6: #0ea5b7;
+  --ok: #18a35f; --warn: #d98200; --bad: #e0302a;
+  --shadow: 0 1px 2px rgba(27,32,48,.06), 0 6px 20px rgba(27,32,48,.07);
   --f-display: "Baloo 2", "Trebuchet MS", system-ui, sans-serif;
-  --f-body: "Hind", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Nunito", "Segoe UI", Roboto, system-ui, sans-serif;
 }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
-  --bg: #0f1716; --surface: #18221f; --ink: #e4ece9; --muted: #9db0ab; --line: #2a3835;
-  --brand: #1f6d64; --brand-ink: #ffffff; --tab-on: #f0b240; --accent: #f0b240; --accent-ink: #2a1a00;
-  --t-grocery: #7fcf98; --t-grocery-bg: #1d3325; --t-pickup: #8fb6f0; --t-pickup-bg: #1c2a3f;
-  --t-med: #f09ab2; --t-med-bg: #3a1f28; --t-rem: #f2c46a; --t-rem-bg: #362a12;
-  --ok: #7fcf98; --warn: #f2c46a; --bad: #ff8a80; --shadow: 0 1px 2px rgba(0,0,0,.4);
+  --bg: #11131b; --surface: #1b1e29; --surface-2: #222634; --ink: #eceef6; --muted: #a2a8bd; --line: #2d3244;
+  --hero-a: #c9402f; --hero-b: #d27a1f; --hero-ink: #ffffff; --brand: #ff6a58; --brand-ink: #1b0b08; --brand-soft: #3a1f1b;
+  --new: #ffd451; --new-ink: #2a1f00;
+  --g: #5fd796; --g-bg: #17311f; --p: #7fb1ff; --p-bg: #172840; --m: #ff8db3; --m-bg: #3a1a27; --r: #b79bff; --r-bg: #2a2045;
+  --c1: #6fa7ff; --c2: #ff7fa8; --c3: #ffbe4d; --c4: #5fd796; --c5: #b79bff; --c6: #4fd3e2;
+  --ok: #5fd796; --warn: #ffbe4d; --bad: #ff7b72; --shadow: 0 1px 2px rgba(0,0,0,.45);
   color-scheme: dark; } }
 :root[data-theme="dark"] {
-  --bg: #0f1716; --surface: #18221f; --ink: #e4ece9; --muted: #9db0ab; --line: #2a3835;
-  --brand: #1f6d64; --brand-ink: #ffffff; --tab-on: #f0b240; --accent: #f0b240; --accent-ink: #2a1a00;
-  --t-grocery: #7fcf98; --t-grocery-bg: #1d3325; --t-pickup: #8fb6f0; --t-pickup-bg: #1c2a3f;
-  --t-med: #f09ab2; --t-med-bg: #3a1f28; --t-rem: #f2c46a; --t-rem-bg: #362a12;
-  --ok: #7fcf98; --warn: #f2c46a; --bad: #ff8a80; --shadow: 0 1px 2px rgba(0,0,0,.4);
+  --bg: #11131b; --surface: #1b1e29; --surface-2: #222634; --ink: #eceef6; --muted: #a2a8bd; --line: #2d3244;
+  --hero-a: #c9402f; --hero-b: #d27a1f; --hero-ink: #ffffff; --brand: #ff6a58; --brand-ink: #1b0b08; --brand-soft: #3a1f1b;
+  --new: #ffd451; --new-ink: #2a1f00;
+  --g: #5fd796; --g-bg: #17311f; --p: #7fb1ff; --p-bg: #172840; --m: #ff8db3; --m-bg: #3a1a27; --r: #b79bff; --r-bg: #2a2045;
+  --c1: #6fa7ff; --c2: #ff7fa8; --c3: #ffbe4d; --c4: #5fd796; --c5: #b79bff; --c6: #4fd3e2;
+  --ok: #5fd796; --warn: #ffbe4d; --bad: #ff7b72; --shadow: 0 1px 2px rgba(0,0,0,.45);
   color-scheme: dark; }
 
 * { box-sizing: border-box; }
 body { background: var(--bg); color: var(--ink); font: 16px/1.5 var(--f-body); margin: 0; }
-body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--brand); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--hero-a); }
 h1, h2, h3 { font-family: var(--f-display); line-height: 1.15; text-wrap: balance; margin: 0; }
 button, input, select, textarea { font: inherit; color: inherit; }
 button { cursor: pointer; }
-:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+:focus-visible { outline: 3px solid var(--r); outline-offset: 2px; }
 .wrap { max-width: 640px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.t-grocery  { --t: var(--g); --tb: var(--g-bg); }
+.t-pickup   { --t: var(--p); --tb: var(--p-bg); }
+.t-medicine { --t: var(--m); --tb: var(--m-bg); }
+.t-reminder { --t: var(--r); --tb: var(--r-bg); }
 
-/* Header */
-.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--brand); color: var(--brand-ink); }
-.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-block: 12px; flex-wrap: wrap; }
-.top h1 { font-size: 1.45rem; }
-.top small { opacity: .8; font-size: .85rem; }
-.who { display: flex; align-items: center; gap: 8px; font-size: .85rem; }
-.who select { background: rgba(255,255,255,.14); color: var(--brand-ink); border: 1px solid rgba(255,255,255,.35); border-radius: 999px; padding: 6px 12px; }
-.who select option { color: #17302d; background: #fff; }
+/* ---------- Header ---------- */
+.hero { background: linear-gradient(120deg, var(--hero-a), var(--hero-b)); color: var(--hero-ink); border-radius: 0 0 26px 26px; }
+.hero .wrap { padding-block: 14px 18px; display: grid; gap: 12px; }
+.hero-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.hero h1 { font-size: 1.5rem; font-weight: 800; }
+.hero small { opacity: .9; font-size: .86rem; font-weight: 600; }
+.who { position: relative; display: inline-flex; align-items: center; }
+.who select { appearance: none; background: rgba(255,255,255,.22); color: var(--hero-ink); border: 1.5px solid rgba(255,255,255,.55); border-radius: 999px; padding: 6px 30px 6px 12px; font-weight: 700; font-size: .9rem; }
+.who::after { content: "▾"; position: absolute; right: 12px; pointer-events: none; font-size: .8rem; }
+.who select option { color: #1b2030; background: #fff; }
+.stack { display: flex; align-items: center; }
+.stack button { margin-left: -8px; border: 2.5px solid rgba(255,255,255,.9); background: var(--mc); width: 40px; height: 40px; border-radius: 50%; font-size: 1.25rem; display: grid; place-items: center; padding: 0; transition: transform .15s; }
+.stack button:first-child { margin-left: 0; }
+.stack button[aria-pressed="true"] { transform: translateY(-3px) scale(1.12); box-shadow: 0 0 0 3px var(--new); z-index: 1; }
+.stack-note { font-size: .82rem; font-weight: 600; opacity: .95; margin-left: 10px; }
 
-main.wrap { padding-block: 16px 120px; display: grid; gap: 18px; }
+main.wrap { padding-block: 18px 130px; display: grid; gap: 22px; }
+section { display: grid; gap: 12px; }
 .section-h { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
-.section-h h2 { font-size: 1.2rem; }
-.section-h small, .meta { color: var(--muted); font-size: .85rem; }
-.empty { color: var(--muted); padding: 14px; border: 1px dashed var(--line); border-radius: 12px; text-align: center; }
+.section-h h2 { font-size: 1.22rem; font-weight: 800; }
+.section-h small, .meta { color: var(--muted); font-size: .85rem; font-weight: 600; }
+.greet h2 { font-size: 1.55rem; font-weight: 800; }
+.greet p { margin: 0; color: var(--muted); font-weight: 600; }
 
-.summary { display: flex; gap: 8px; flex-wrap: wrap; }
-.stat { background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; font-size: .9rem; font-variant-numeric: tabular-nums; }
-.stat b { font-weight: 600; }
+/* ---------- Quick add + stats ---------- */
+.quick { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.quick button { border: 0; background: var(--tb); color: var(--t); border-radius: 18px; padding: 12px 4px 10px; display: grid; justify-items: center; gap: 2px; font-weight: 800; font-size: .82rem; transition: transform .12s; }
+.quick button:active { transform: scale(.95); }
+.quick .ic { font-size: 1.8rem; line-height: 1.2; }
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.stat { background: var(--surface); border-radius: 18px; padding: 12px; box-shadow: var(--shadow); display: grid; gap: 0; }
+.stat b { font-family: var(--f-display); font-size: 1.7rem; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.stat span { font-size: .78rem; color: var(--muted); font-weight: 700; }
+.stat.hot b { color: var(--brand); }
 .stat.bad b { color: var(--bad); }
 
-/* Timeline (today) */
-.timeline { list-style: none; margin: 0; padding: 0; background: var(--surface); border-radius: 14px; box-shadow: var(--shadow); }
-.tl { display: grid; grid-template-columns: 4.6rem 1fr auto; gap: 10px; align-items: center; padding: 12px 14px; border-top: 1px solid var(--line); }
-.tl:first-child { border-top: 0; }
-.tl time { font-variant-numeric: tabular-nums; font-weight: 600; color: var(--muted); font-size: .92rem; }
+/* ---------- Timeline ---------- */
+.timeline { list-style: none; margin: 0; padding: 6px 0; background: var(--surface); border-radius: 20px; box-shadow: var(--shadow); }
+.tl { display: grid; grid-template-columns: 4.4rem 2.6rem 1fr auto; gap: 10px; align-items: center; padding: 10px 14px; }
+.tl + .tl { border-top: 1px solid var(--line); }
+.tl time { font-variant-numeric: tabular-nums; font-weight: 800; font-size: .9rem; }
+.tl .tile { width: 2.6rem; height: 2.6rem; font-size: 1.3rem; border-radius: 13px; }
 .tl > div { min-width: 0; }
-.tl small { color: var(--muted); }
-.tl.missed time, .tl.overdue time { color: var(--bad); }
-.tl.taken, .tl.done { opacity: .6; }
+.tl b { font-weight: 800; }
+.tl small { color: var(--muted); font-weight: 600; }
+.tl.missed time, .tl.overdue time, .tl.missed small, .tl.overdue small { color: var(--bad); }
+.tl.taken { opacity: .55; }
 
-/* Cards */
-.cards { display: grid; gap: 12px; }
-.card { background: var(--surface); border-radius: 14px; box-shadow: var(--shadow); padding: 14px; display: grid; gap: 10px; }
-.card-h { display: flex; gap: 10px; align-items: flex-start; justify-content: space-between; }
+/* ---------- Cards ---------- */
+.cards { display: grid; gap: 14px; }
+.card { background: var(--surface); border-radius: 22px; box-shadow: var(--shadow); padding: 16px; display: grid; gap: 12px; }
+.card-h { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: center; }
 .card-h > div { min-width: 0; }
-.card h3 { font-size: 1.12rem; overflow-wrap: anywhere; }
+.tile { display: grid; place-items: center; width: 3.1rem; height: 3.1rem; border-radius: 16px; background: var(--tb); font-size: 1.6rem; }
+.kind { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: .74rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--t); }
+.card h3 { font-size: 1.16rem; font-weight: 800; overflow-wrap: anywhere; }
 .card p { margin: 0; overflow-wrap: anywhere; }
-.card.is-done { opacity: .62; }
-.type { display: inline-flex; align-items: center; gap: 4px; font-size: .74rem; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; padding: 2px 8px; border-radius: 999px; }
-.type.grocery { color: var(--t-grocery); background: var(--t-grocery-bg); }
-.type.pickup { color: var(--t-pickup); background: var(--t-pickup-bg); }
-.type.medicine { color: var(--t-med); background: var(--t-med-bg); }
-.type.reminder { color: var(--t-rem); background: var(--t-rem-bg); }
-.pill-new { background: var(--accent); color: var(--accent-ink); font-size: .72rem; font-weight: 700; padding: 1px 8px; border-radius: 999px; letter-spacing: .04em; }
-.when { font-size: .88rem; color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
-.when.overdue { color: var(--bad); font-weight: 600; }
-.people { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: .86rem; color: var(--muted); }
-.av { display: inline-flex; align-items: center; gap: 4px; padding: 1px 9px 1px 3px; border-radius: 999px; background: var(--bg); border: 1px solid var(--line); color: var(--ink); font-size: .85rem; white-space: nowrap; }
-.av i { font-style: normal; display: inline-grid; place-items: center; width: 1.45em; height: 1.45em; border-radius: 50%; background: var(--surface); }
-.av.acked { border-color: var(--ok); }
-.note { background: var(--bg); border-radius: 8px; padding: 6px 10px; font-size: .92rem; }
+.card.is-done { opacity: .6; }
+.card.is-done h3 { text-decoration: line-through; }
+.pill-new { background: var(--new); color: var(--new-ink); font-size: .68rem; padding: 1px 8px; border-radius: 999px; letter-spacing: .05em; }
+.when { display: inline-flex; gap: 4px; align-items: center; font-size: .86rem; font-weight: 700; color: var(--muted); font-variant-numeric: tabular-nums; }
+.when.overdue { color: var(--bad); }
+.people { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: .85rem; color: var(--muted); font-weight: 700; }
+.av { display: inline-flex; align-items: center; gap: 5px; padding: 2px 10px 2px 2px; border-radius: 999px; background: color-mix(in srgb, var(--mc) 14%, var(--surface)); color: var(--ink); font-size: .84rem; font-weight: 700; white-space: nowrap; }
+.av i { font-style: normal; display: inline-grid; place-items: center; width: 1.6em; height: 1.6em; border-radius: 50%; background: var(--mc); font-size: .95em; }
+.av.acked::after { content: "👍"; font-size: .85em; }
+.note { background: var(--surface-2); border-radius: 12px; padding: 8px 12px; font-size: .92rem; }
+.note::before { content: "📝 "; }
 
+.progress { height: 8px; border-radius: 999px; background: var(--tb); overflow: hidden; }
+.progress i { display: block; height: 100%; background: var(--t); border-radius: 999px; transition: width .3s; }
 .checklist { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
 .checklist li { display: flex; justify-content: space-between; gap: 8px; align-items: center; }
-.checklist label { display: flex; gap: 8px; align-items: center; min-width: 0; padding: 3px 0; }
-.checklist input { width: 1.15rem; height: 1.15rem; accent-color: var(--t-grocery); }
+.checklist label { display: flex; gap: 10px; align-items: center; min-width: 0; padding: 4px 0; font-weight: 600; }
+.checklist input { width: 1.25rem; height: 1.25rem; accent-color: var(--g); }
 .checklist .got span { text-decoration: line-through; color: var(--muted); }
-.checklist small { color: var(--muted); font-size: .78rem; white-space: nowrap; }
-.inline-add { display: flex; gap: 6px; }
+.checklist small { color: var(--muted); font-size: .78rem; white-space: nowrap; font-weight: 700; }
+.inline-add { display: flex; gap: 8px; }
 .inline-add input { flex: 1; min-width: 0; }
 
-.doses { display: flex; flex-wrap: wrap; gap: 6px; }
-.dose { border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 5px 10px; font-size: .88rem; font-variant-numeric: tabular-nums; }
-.dose.taken { border-color: var(--ok); color: var(--ok); cursor: default; }
+.doses { display: flex; flex-wrap: wrap; gap: 8px; }
+.dose { border: 2px solid var(--line); background: var(--surface); border-radius: 14px; padding: 6px 12px; font-size: .9rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.dose.taken { border-color: var(--ok); background: color-mix(in srgb, var(--ok) 12%, var(--surface)); color: var(--ok); cursor: default; }
 .dose.missed { border-color: var(--bad); color: var(--bad); }
-.dose.due { border-color: var(--warn); color: var(--warn); font-weight: 600; }
+.dose.due { border-color: var(--warn); color: var(--warn); }
 
 .actions { display: flex; flex-wrap: wrap; gap: 8px; }
-.btn { border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 6px 12px; font-size: .9rem; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; color: var(--ink); }
-.btn:hover { border-color: var(--brand); }
+.btn { border: 1.5px solid var(--line); background: var(--surface); border-radius: 999px; padding: 7px 14px; font-size: .9rem; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; color: var(--ink); }
+.btn:hover { border-color: var(--muted); }
 .btn.primary { background: var(--brand); color: var(--brand-ink); border-color: var(--brand); }
-.btn.ok { border-color: var(--ok); color: var(--ok); }
-.btn.danger { color: var(--bad); }
-.btn.small { padding: 3px 10px; font-size: .85rem; }
+.btn.ok { background: color-mix(in srgb, var(--ok) 13%, var(--surface)); border-color: transparent; color: var(--ok); }
+.btn.wa { color: var(--g); }
+.btn.danger { color: var(--bad); border-color: transparent; background: transparent; }
+.btn.small { padding: 4px 12px; font-size: .85rem; }
 input[type="text"], input[type="datetime-local"], input[type="date"], input[type="time"], input:not([type]), select, textarea {
-  background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; width: 100%; }
+  background: var(--surface-2); border: 1.5px solid var(--line); border-radius: 14px; padding: 10px 12px; width: 100%; }
+input:focus, select:focus, textarea:focus { border-color: var(--brand); outline: none; box-shadow: 0 0 0 3px var(--brand-soft); }
 
-.filters { display: flex; gap: 6px; flex-wrap: wrap; }
-.filters button { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 4px 12px; font-size: .88rem; }
-.filters button[aria-pressed="true"] { background: var(--brand); color: var(--brand-ink); border-color: var(--brand); }
+.filters { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; }
+.filters button { flex: none; border: 0; background: var(--surface); box-shadow: var(--shadow); border-radius: 999px; padding: 7px 14px; font-size: .88rem; font-weight: 700; }
+.filters button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
 
-.panel { background: var(--surface); border-radius: 14px; box-shadow: var(--shadow); padding: 14px; display: grid; gap: 12px; }
-.member-row { display: flex; align-items: center; gap: 10px; justify-content: space-between; border-top: 1px solid var(--line); padding-top: 10px; }
-.member-row:first-child { border-top: 0; padding-top: 0; }
-.member-row .big { font-size: 1.6rem; }
-.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
-label.f { display: grid; gap: 4px; font-size: .88rem; color: var(--muted); }
-label.f > span { font-weight: 500; }
+.empty { color: var(--muted); padding: 22px 16px; border: 2px dashed var(--line); border-radius: 20px; text-align: center; font-weight: 600; display: grid; gap: 4px; justify-items: center; }
+.empty .big { font-size: 2.2rem; }
+.panel { background: var(--surface); border-radius: 22px; box-shadow: var(--shadow); padding: 16px; display: grid; gap: 14px; }
+.member-row { display: flex; align-items: center; gap: 12px; justify-content: space-between; flex-wrap: wrap; }
+.member-row + .member-row { border-top: 1px solid var(--line); padding-top: 12px; }
+.face { width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; font-size: 1.5rem; background: var(--mc); flex: none; }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
+label.f { display: grid; gap: 5px; font-size: .86rem; color: var(--muted); }
+label.f > span { font-weight: 700; }
+.swatches { display: flex; gap: 8px; flex-wrap: wrap; }
+.swatches label { width: 34px; height: 34px; border-radius: 50%; background: var(--mc); cursor: pointer; display: grid; place-items: center; }
+.swatches input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.swatches label:has(input:checked) { box-shadow: 0 0 0 3px var(--surface), 0 0 0 5px var(--ink); }
+.swatches label:has(input:focus-visible) { outline: 3px solid var(--r); outline-offset: 4px; }
 
-/* Tab bar + FAB */
-.tabs { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; background: var(--surface); border-top: 1px solid var(--line); padding-bottom: env(safe-area-inset-bottom, 0px); padding-left: max(8px, env(safe-area-inset-left, 0px)); padding-right: max(8px, env(safe-area-inset-right, 0px)); }
-.tabs .row { max-width: 640px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); }
-.tabs button { background: none; border: 0; padding: 8px 4px 10px; display: grid; justify-items: center; gap: 1px; color: var(--muted); font-size: .78rem; position: relative; }
-.tabs button .ic { font-size: 1.25rem; line-height: 1.2; }
-.tabs button[aria-current="page"] { color: var(--tab-on); font-weight: 600; }
-.badge { position: absolute; top: 4px; left: calc(50% + 8px); background: var(--accent); color: var(--accent-ink); font-size: .7rem; font-weight: 700; min-width: 1.3em; height: 1.3em; border-radius: 999px; display: grid; place-items: center; padding: 0 4px; }
-.fab { position: fixed; right: calc(18px + env(safe-area-inset-right, 0px)); bottom: calc(76px + env(safe-area-inset-bottom, 0px)); z-index: 7; width: 58px; height: 58px; border-radius: 50%; border: 0; background: var(--accent); color: var(--accent-ink); font-size: 2rem; line-height: 1; box-shadow: 0 6px 18px rgba(0,0,0,.22); }
+/* ---------- Bottom navigation ---------- */
+.tabs { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; background: var(--surface); box-shadow: 0 -4px 20px rgba(27,32,48,.08); border-radius: 24px 24px 0 0; padding-bottom: env(safe-area-inset-bottom, 0px); padding-left: max(8px, env(safe-area-inset-left, 0px)); padding-right: max(8px, env(safe-area-inset-right, 0px)); }
+.tabs .row { max-width: 640px; margin: 0 auto; display: grid; grid-template-columns: repeat(5, 1fr); align-items: end; }
+.tabs button { background: none; border: 0; padding: 8px 2px 10px; display: grid; justify-items: center; gap: 2px; color: var(--muted); font-size: .74rem; font-weight: 700; position: relative; }
+.tabs .ic { font-size: 1.3rem; line-height: 1; padding: 4px 16px; border-radius: 999px; transition: background .15s; }
+.tabs button[aria-current="page"] { color: var(--ink); }
+.tabs button[aria-current="page"] .ic { background: var(--brand-soft); }
+.tabs .fab { align-self: center; }
+.tabs .fab span.plus { width: 60px; height: 60px; margin-top: -30px; border-radius: 20px; display: grid; place-items: center; font-size: 2rem; font-weight: 800; color: #fff; background: linear-gradient(135deg, var(--hero-a), var(--hero-b)); box-shadow: 0 8px 20px color-mix(in srgb, var(--hero-a) 45%, transparent); transform: rotate(0); transition: transform .2s; }
+.tabs .fab:active span.plus { transform: scale(.93); }
+.badge { position: absolute; top: 2px; left: calc(50% + 6px); background: var(--brand); color: #fff; font-size: .68rem; font-weight: 800; min-width: 1.4em; height: 1.4em; border-radius: 999px; display: grid; place-items: center; padding: 0 4px; border: 2px solid var(--surface); }
 
-/* Composer sheet */
-dialog { border: 0; padding: 0; width: min(560px, 100%); max-height: 92vh; border-radius: 18px 18px 0 0; margin: auto auto 0; background: var(--surface); color: var(--ink); }
-@media (min-width: 600px) { dialog { border-radius: 18px; margin: auto; } }
-dialog::backdrop { background: rgba(10,25,23,.5); }
-dialog form { padding: 18px max(16px, env(safe-area-inset-left, 0px)) calc(18px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 14px; }
-.types { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
-.types button { border: 1px solid var(--line); background: var(--bg); border-radius: 12px; padding: 8px 2px; display: grid; justify-items: center; font-size: .78rem; }
-.types button .ic { font-size: 1.4rem; }
-.types button[aria-pressed="true"] { border-color: var(--brand); background: var(--surface); box-shadow: inset 0 0 0 1px var(--brand); font-weight: 600; }
+/* ---------- Composer sheet ---------- */
+dialog { border: 0; padding: 0; width: min(560px, 100%); max-height: 92vh; border-radius: 26px 26px 0 0; margin: auto auto 0; background: var(--surface); color: var(--ink); }
+@media (min-width: 600px) { dialog { border-radius: 26px; margin: auto; } }
+dialog::backdrop { background: rgba(12,14,22,.55); }
+dialog form { padding: 10px max(18px, env(safe-area-inset-left, 0px)) calc(18px + env(safe-area-inset-bottom, 0px)) max(18px, env(safe-area-inset-right, 0px)); display: grid; gap: 16px; }
+.grab { width: 44px; height: 5px; border-radius: 99px; background: var(--line); justify-self: center; }
+dialog h2 { font-size: 1.35rem; font-weight: 800; }
+.types { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.types button { border: 2px solid transparent; background: var(--tb); color: var(--t); border-radius: 16px; padding: 10px 2px 8px; display: grid; justify-items: center; font-size: .78rem; font-weight: 800; opacity: .7; }
+.types button .ic { font-size: 1.6rem; }
+.types button[aria-pressed="true"] { border-color: var(--t); opacity: 1; }
 fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: 6px; }
-legend { font-size: .88rem; color: var(--muted); font-weight: 500; padding: 0; margin-bottom: 4px; }
-.tagger { display: flex; flex-wrap: wrap; gap: 6px; }
-.tagger label { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px 4px 8px; font-size: .9rem; cursor: pointer; }
-.tagger input { accent-color: var(--brand); }
-.tagger label:has(input:checked) { border-color: var(--brand); background: var(--bg); }
+legend { font-size: .86rem; color: var(--muted); font-weight: 700; padding: 0; margin-bottom: 6px; }
+.tagger { display: flex; flex-wrap: wrap; gap: 8px; }
+.tagger label { display: inline-flex; align-items: center; gap: 6px; border: 2px solid var(--line); border-radius: 999px; padding: 3px 12px 3px 3px; font-size: .9rem; font-weight: 700; cursor: pointer; }
+.tagger label i { font-style: normal; width: 1.8em; height: 1.8em; border-radius: 50%; display: grid; place-items: center; background: var(--mc); }
+.tagger input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.tagger label:has(input:checked) { border-color: var(--mc); background: color-mix(in srgb, var(--mc) 15%, var(--surface)); }
+.tagger label:has(input:checked)::after { content: "✓"; color: var(--mc); font-weight: 800; }
+.tagger label:has(input:focus-visible) { outline: 3px solid var(--r); outline-offset: 2px; }
 .row-end { display: flex; justify-content: flex-end; gap: 8px; }
 
-.toasts { position: fixed; left: 0; right: 0; top: calc(70px + env(safe-area-inset-top, 0px)); z-index: 20; display: grid; justify-items: center; gap: 8px; pointer-events: none; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
-.toast { background: var(--ink); color: var(--bg); border-radius: 12px; padding: 10px 14px; max-width: 520px; box-shadow: var(--shadow); font-size: .93rem; animation: in .25s ease-out; }
-@keyframes in { from { transform: translateY(-8px); opacity: .3; } }
-@media (prefers-reduced-motion: reduce) { .toast { animation: none; } }
-.demo-note { font-size: .82rem; color: var(--muted); text-align: center; }
+.toasts { position: fixed; left: 0; right: 0; top: calc(14px + env(safe-area-inset-top, 0px)); z-index: 20; display: grid; justify-items: center; gap: 8px; pointer-events: none; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.toast { background: var(--ink); color: var(--bg); border-radius: 16px; padding: 11px 16px; max-width: 520px; box-shadow: 0 8px 24px rgba(0,0,0,.25); font-size: .93rem; font-weight: 700; animation: drop .28s cubic-bezier(.2,.9,.3,1.3); }
+@keyframes drop { from { transform: translateY(-14px) scale(.96); opacity: .2; } }
+.card, .tl { animation: rise .25s ease-out both; }
+@keyframes rise { from { transform: translateY(6px); opacity: .4; } }
+@media (prefers-reduced-motion: reduce) { .toast, .card, .tl { animation: none; } .stack button, .progress i { transition: none; } }
+.demo-note { font-size: .8rem; color: var(--muted); text-align: center; font-weight: 600; }
+@media (max-width: 380px) { .tl { grid-template-columns: 3.9rem 1fr auto; } .tl .tile { display: none; } .quick .ic { font-size: 1.5rem; } }
 </style>
 </head>
 <body>
 
-<header class="top">
+<header class="hero">
   <div class="wrap">
-    <div>
-      <h1 id="familyName">FamilyConnect</h1>
-      <small id="subtitle"></small>
+    <div class="hero-row">
+      <div>
+        <h1 id="familyName">FamilyConnect</h1>
+        <small id="subtitle"></small>
+      </div>
+      <label class="who" for="whoSelect"><span class="sr" hidden>Acting as</span><select id="whoSelect" aria-label="Acting as"></select></label>
     </div>
-    <label class="who" for="whoSelect">Acting as <select id="whoSelect"></select></label>
+    <div class="hero-row" style="justify-content:flex-start;gap:0">
+      <div class="stack" id="stack" role="group" aria-label="Switch family member"></div>
+      <span class="stack-note">Tap a face to see the app as them</span>
+    </div>
   </div>
 </header>
 
 <main id="view" class="wrap" aria-live="polite"></main>
 
-<button id="fab" class="fab" type="button" aria-label="Create a new list, pickup, medicine or reminder">+</button>
-
 <nav class="tabs" aria-label="Sections">
   <div class="row">
-    <button type="button" data-tab="today" aria-current="page"><span class="ic">📅</span>Today</button>
+    <button type="button" data-tab="today" aria-current="page"><span class="ic">🏡</span>Today</button>
     <button type="button" data-tab="mine"><span class="ic">🙋</span>For me<b id="mineBadge" class="badge" hidden></b></button>
-    <button type="button" data-tab="family"><span class="ic">🏠</span>Family</button>
-    <button type="button" data-tab="members"><span class="ic">👪</span>Members</button>
+    <button type="button" class="fab" id="fab" aria-label="Create a new list, pickup, medicine or reminder"><span class="plus">+</span></button>
+    <button type="button" data-tab="family"><span class="ic">📋</span>All</button>
+    <button type="button" data-tab="members"><span class="ic">👨‍👩‍👧‍👦</span>Family</button>
   </div>
 </nav>
 
 <dialog id="composer" aria-labelledby="composerTitle">
   <form id="createForm" novalidate>
-    <h2 id="composerTitle">Create and tag</h2>
-    <div class="types" id="typePicker" role="group" aria-label="What do you need?"></div>
+    <span class="grab" aria-hidden="true"></span>
+    <h2 id="composerTitle">What do you need? ✨</h2>
+    <div class="types" id="typePicker" role="group" aria-label="Type of request"></div>
     <div id="typeFields" style="display:grid;gap:12px"></div>
     <fieldset>
-      <legend id="tagLegend">Tag family members (they get the reminder)</legend>
+      <legend id="tagLegend">Tag family members</legend>
       <div class="tagger" id="tagger"></div>
     </fieldset>
     <label class="f" for="f-notes"><span>Note (optional)</span><textarea id="f-notes" name="notes" rows="2" placeholder="e.g. Use the Amul brand, not the store brand"></textarea></label>
     <div class="row-end">
       <button type="button" class="btn" id="cancelCreate">Cancel</button>
-      <button type="submit" class="btn primary">Create and notify</button>
+      <button type="submit" class="btn primary">Send to family 🚀</button>
     </div>
   </form>
 </dialog>
@@ -223,13 +281,14 @@ legend { font-size: .88rem; color: var(--muted); font-weight: 500; padding: 0; m
 
 <script>
 'use strict';
-/* FamilyConnect prototype — all data stays in this browser (localStorage). */
-const STORE_KEY = 'familyconnect.prototype.v1';
+/* FamilyConnect prototype. All data stays in this browser (localStorage). */
+const STORE_KEY = 'familyconnect.prototype.v2';
 const RELATIONS = ['Father','Mother','Husband','Wife','Son','Daughter','Grandfather','Grandmother','Brother','Sister','Uncle','Aunt','Other'];
-const EMOJIS = ['👨','👩','👧','👦','👴','👵','🧑','👶','🧔','👱‍♀️'];
+const EMOJIS = ['👨','👩','👧','👦','👴','👵','🧑','👶','🧔','👩‍🦱','👨‍🦳','👩‍🦳'];
+const COLOURS = 6;
 const TYPES = {
   grocery:  { label: 'Grocery',  icon: '🛒', long: 'Grocery list' },
-  pickup:   { label: 'Pickup',   icon: '🚗', long: 'Pickup / drop' },
+  pickup:   { label: 'Pickup',   icon: '🚗', long: 'Pickup' },
   medicine: { label: 'Medicine', icon: '💊', long: 'Medicine' },
   reminder: { label: 'Reminder', icon: '⏰', long: 'Reminder' },
 };
@@ -247,14 +306,14 @@ function seed() {
   const at = (h, m, add = 0) => { const d = new Date(now); d.setDate(d.getDate() + add); d.setHours(h, m, 0, 0); return d.toISOString(); };
   const iso = new Date().toISOString();
   return {
-    familyName: 'The Sharma Family (example)',
+    familyName: 'The Sharma Family',
     currentId: 'm2',
     members: [
-      { id: 'm1', name: 'Ravi',   relation: 'Husband',     emoji: '👨' },
-      { id: 'm2', name: 'Priya',  relation: 'Wife',        emoji: '👩' },
-      { id: 'm3', name: 'Anu',    relation: 'Daughter',    emoji: '👧' },
-      { id: 'm4', name: 'Kiran',  relation: 'Son',         emoji: '👦' },
-      { id: 'm5', name: 'Dadaji', relation: 'Grandfather', emoji: '👴' },
+      { id: 'm1', name: 'Ravi',   relation: 'Husband',     emoji: '👨', color: 1 },
+      { id: 'm2', name: 'Priya',  relation: 'Wife',        emoji: '👩', color: 2 },
+      { id: 'm3', name: 'Anu',    relation: 'Daughter',    emoji: '👧', color: 3 },
+      { id: 'm4', name: 'Kiran',  relation: 'Son',         emoji: '👦', color: 4 },
+      { id: 'm5', name: 'Dadaji', relation: 'Grandfather', emoji: '👴', color: 5 },
     ],
     items: [
       { id: 'i1', type: 'grocery', title: 'Weekly groceries', createdBy: 'm2', assignees: ['m1'], ack: [], status: 'open', createdAt: iso,
@@ -269,8 +328,8 @@ function seed() {
       { id: 'i4', type: 'medicine', title: 'Vitamin D3', createdBy: 'm2', assignees: ['m2'], ack: [], status: 'open', createdAt: iso,
         forMember: 'm5', dose: '1 sachet in milk', times: ['13:00'], startDate: dayKey(now), endDate: '', taken: {} },
       { id: 'i5', type: 'reminder', title: 'Pay electricity bill', createdBy: 'm1', assignees: ['m2'], ack: [], status: 'open', createdAt: iso,
-        due: at(11, 0, 1), notes: 'Consumer no. is on the fridge' },
-      { id: 'i6', type: 'reminder', title: 'Kiran: parent–teacher meeting', createdBy: 'm4', assignees: ['m1', 'm2'], ack: [], status: 'open', createdAt: iso,
+        due: at(11, 0, 1), notes: 'Consumer number is on the fridge' },
+      { id: 'i6', type: 'reminder', title: 'Kiran’s parent–teacher meeting', createdBy: 'm4', assignees: ['m1', 'm2'], ack: [], status: 'open', createdAt: iso,
         due: at(10, 0, 2), notes: 'Bring the report card' },
     ],
     notified: {},
@@ -278,7 +337,10 @@ function seed() {
 }
 
 function load() {
-  try { const s = JSON.parse(localStorage.getItem(STORE_KEY)); if (s && Array.isArray(s.members) && s.members.length) return s; } catch (e) {}
+  try {
+    const s = JSON.parse(localStorage.getItem(STORE_KEY));
+    if (s && Array.isArray(s.members) && s.members.length) { s.members.forEach((m, i) => { if (!m.color) m.color = (i % COLOURS) + 1; }); return s; }
+  } catch (e) {}
   return seed();
 }
 let state = load();
@@ -292,9 +354,10 @@ let createType = 'grocery';
 /* ---------- Helpers ---------- */
 const member = id => state.members.find(m => m.id === id);
 const nameOf = id => member(id)?.name ?? 'Someone';
+const mc = m => `--mc: var(--c${m?.color || 1})`;
 const avatar = (id, acked = false) => {
   const m = member(id); if (!m) return '';
-  return `<span class="av${acked ? ' acked' : ''}" title="${esc(m.relation)}${acked ? ' · on it' : ''}"><i>${esc(m.emoji)}</i>${esc(m.name)}${acked ? ' ✓' : ''}</span>`;
+  return `<span class="av${acked ? ' acked' : ''}" style="${mc(m)}" title="${esc(m.relation)}${acked ? ' · on it' : ''}"><i>${esc(m.emoji)}</i>${esc(m.name)}</span>`;
 };
 const fmtTime = d => d.toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit' });
 function fmtWhen(iso) {
@@ -316,15 +379,16 @@ function doseStatus(it, day, t) {
 const isOverdue = it => it.type !== 'medicine' && it.due && it.status === 'open' && new Date(it.due) < new Date();
 const involvesMe = it => it.assignees.includes(state.currentId) || (it.type === 'medicine' && it.forMember === state.currentId);
 const unseenForMe = () => state.items.filter(it => it.status === 'open' && it.assignees.includes(state.currentId) && !it.ack.includes(state.currentId));
+const empty = (emoji, text) => `<div class="empty"><span class="big">${emoji}</span>${text}</div>`;
 
 function shareText(it) {
   const T = TYPES[it.type];
   let s = `${T.icon} ${it.title}`;
-  if (it.due) s += `\nWhen: ${fmtWhen(it.due)}`;
+  if (it.due) s += `\n🕒 ${fmtWhen(it.due)}`;
   if (it.type === 'grocery') s += '\n' + it.list.filter(x => !x.done).map(x => `• ${x.text}`).join('\n');
-  if (it.type === 'pickup' && it.location) s += `\nWhere: ${it.location}`;
-  if (it.type === 'medicine') s += `\nFor: ${nameOf(it.forMember)} · ${it.dose} · ${it.times.join(', ')}`;
-  if (it.notes) s += `\nNote: ${it.notes}`;
+  if (it.type === 'pickup' && it.location) s += `\n📍 ${it.location}`;
+  if (it.type === 'medicine') s += `\nFor ${nameOf(it.forMember)} · ${it.dose} · ${it.times.join(', ')}`;
+  if (it.notes) s += `\n📝 ${it.notes}`;
   return s + `\n— ${nameOf(it.createdBy)} via FamilyConnect`;
 }
 
@@ -336,44 +400,46 @@ function card(it) {
   const over = isOverdue(it);
   let body = '';
   if (it.type === 'grocery') {
-    const got = it.list.filter(x => x.done).length;
-    body = `<ul class="checklist">${it.list.map(x => `
+    const got = it.list.filter(x => x.done).length, pct = it.list.length ? Math.round(got / it.list.length * 100) : 0;
+    body = `<div style="display:grid;gap:6px"><div class="progress" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100" aria-label="Items bought"><i style="width:${pct}%"></i></div>
+        <span class="meta">${got} of ${it.list.length} bought</span></div>
+      <ul class="checklist">${it.list.map(x => `
         <li class="${x.done ? 'got' : ''}"><label><input type="checkbox" data-action="toggle-line" data-id="${it.id}" data-line="${x.id}" ${x.done ? 'checked' : ''}><span>${esc(x.text)}</span></label>
         ${x.done && x.doneBy ? `<small>✓ ${esc(nameOf(x.doneBy))}</small>` : ''}</li>`).join('')}</ul>
       <form class="inline-add" data-form="add-line" data-id="${it.id}">
         <input id="add-${it.id}" name="line" placeholder="Add an item…" aria-label="Add an item to ${esc(it.title)}">
-        <button class="btn small">Add</button></form>
-      <p class="meta">${got} of ${it.list.length} picked up</p>`;
+        <button class="btn small">＋ Add</button></form>`;
   } else if (it.type === 'pickup') {
-    body = `<p>📍 ${esc(it.location || 'Location not set')}${it.person ? ` · pick up ${avatar(it.person)}` : ''}</p>`;
+    body = `<p>📍 <b>${esc(it.location || 'Location not set')}</b>${it.person ? ` &nbsp;·&nbsp; for ${avatar(it.person)}` : ''}</p>`;
   } else if (it.type === 'medicine') {
     const today = new Date();
-    body = `<p>For ${avatar(it.forMember)} · ${esc(it.dose || '')}</p>
+    body = `<p>For ${avatar(it.forMember)} &nbsp;·&nbsp; ${esc(it.dose || '')}</p>
       <div class="doses">${medActive(it, today) ? it.times.map(t => {
         const st = doseStatus(it, today, t);
-        const label = st.s === 'taken' ? `✓ ${esc(nameOf(st.by))}` : st.s === 'missed' ? 'missed' : st.s === 'due' ? 'due now' : 'upcoming';
+        const label = st.s === 'taken' ? `✅ ${esc(nameOf(st.by))}` : st.s === 'missed' ? '⚠️ missed' : st.s === 'due' ? '🔔 due now' : 'upcoming';
         return `<button type="button" class="dose ${st.s}" data-action="take" data-id="${it.id}" data-time="${t}" ${st.s === 'taken' ? 'disabled' : ''} title="Mark this dose as taken">${fmtTime(doseDate(today, t))} · ${label}</button>`;
       }).join('') : '<small class="meta">Not scheduled today</small>'}</div>`;
   }
   const actions = [];
-  if (isNew) actions.push(`<button type="button" class="btn primary small" data-action="ack" data-id="${it.id}">👍 On it</button>`);
-  if (it.type !== 'medicine' && it.status === 'open') actions.push(`<button type="button" class="btn ok small" data-action="done" data-id="${it.id}">✓ Mark done</button>`);
-  if (it.type !== 'medicine' && it.status === 'done') actions.push(`<button type="button" class="btn small" data-action="reopen" data-id="${it.id}">Reopen</button>`);
-  actions.push(`<a class="btn small" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(shareText(it))}">Share on WhatsApp</a>`);
+  if (isNew) actions.push(`<button type="button" class="btn primary small" data-action="ack" data-id="${it.id}">👍 I’m on it</button>`);
+  if (it.type !== 'medicine' && it.status === 'open') actions.push(`<button type="button" class="btn ok small" data-action="done" data-id="${it.id}">✅ Done</button>`);
+  if (it.type !== 'medicine' && it.status === 'done') actions.push(`<button type="button" class="btn small" data-action="reopen" data-id="${it.id}">↩️ Reopen</button>`);
+  actions.push(`<a class="btn small wa" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(shareText(it))}">💬 WhatsApp</a>`);
   if (it.createdBy === state.currentId) actions.push(`<button type="button" class="btn danger small" data-action="delete" data-id="${it.id}">${it.type === 'medicine' ? 'Stop' : 'Delete'}</button>`);
 
-  return `<article class="card${it.status === 'done' ? ' is-done' : ''}">
+  return `<article class="card t-${it.type}${it.status === 'done' ? ' is-done' : ''}">
     <div class="card-h">
+      <span class="tile" aria-hidden="true">${T.icon}</span>
       <div>
-        <span class="type ${it.type}">${T.icon} ${T.long}</span> ${isNew ? '<span class="pill-new">NEW</span>' : ''}
+        <div class="kind">${T.long}${isNew ? '<span class="pill-new">NEW</span>' : ''}</div>
         <h3>${esc(it.title)}</h3>
+        ${it.due ? `<span class="when${over ? ' overdue' : ''}">🕒 ${over ? 'Overdue · ' : ''}${esc(fmtWhen(it.due))}</span>` : ''}
       </div>
-      ${it.due ? `<span class="when${over ? ' overdue' : ''}">${over ? 'Overdue · ' : ''}${esc(fmtWhen(it.due))}</span>` : ''}
     </div>
     ${body}
     ${it.notes ? `<p class="note">${esc(it.notes)}</p>` : ''}
-    <div class="people">From ${avatar(it.createdBy)} → ${it.assignees.length ? it.assignees.map(a => avatar(a, it.ack.includes(a))).join('') : '<span>nobody tagged</span>'}</div>
-    ${it.status === 'done' && it.doneBy ? `<p class="meta">Done by ${esc(nameOf(it.doneBy))}</p>` : ''}
+    <div class="people">${avatar(it.createdBy)} <span>→</span> ${it.assignees.length ? it.assignees.map(a => avatar(a, it.ack.includes(a))).join('') : '<span>nobody tagged</span>'}</div>
+    ${it.status === 'done' && it.doneBy ? `<p class="meta">🎉 Done by ${esc(nameOf(it.doneBy))}</p>` : ''}
     <div class="actions">${actions.join('')}</div>
   </article>`;
 }
@@ -387,39 +453,42 @@ function viewToday() {
       if (!medActive(it, now)) continue;
       for (const t of it.times) {
         const st = doseStatus(it, now, t); if (st.s === 'missed') missed++;
-        const sub = st.s === 'taken' ? `Taken · marked by ${esc(nameOf(st.by))}` : st.s === 'missed' ? 'Missed · please check on them' : st.s === 'due' ? 'Due now' : 'Upcoming';
-        rows.push({ at: doseDate(now, t), html: `<li class="tl ${st.s}"><time>${fmtTime(doseDate(now, t))}</time>
-          <div>💊 <b>${esc(it.title)}</b> for ${avatar(it.forMember)}<br><small>${sub}</small></div>
-          ${st.s !== 'taken' ? `<button type="button" class="btn small" data-action="take" data-id="${it.id}" data-time="${t}">Taken</button>` : '<span></span>'}</li>` });
+        const sub = st.s === 'taken' ? `✅ Taken · ${esc(nameOf(st.by))}` : st.s === 'missed' ? '⚠️ Missed · please check' : st.s === 'due' ? '🔔 Due now' : `for ${esc(nameOf(it.forMember))}`;
+        rows.push({ at: doseDate(now, t), html: `<li class="tl t-medicine ${st.s}"><time>${fmtTime(doseDate(now, t))}</time><span class="tile">💊</span>
+          <div><b>${esc(it.title)}</b><br><small>${sub}</small></div>
+          ${st.s !== 'taken' ? `<button type="button" class="btn ok small" data-action="take" data-id="${it.id}" data-time="${t}">Taken</button>` : '<span></span>'}</li>` });
       }
       continue;
     }
-    if (!it.due || it.status !== 'open') continue;
+    if (it.type === 'grocery' || !it.due || it.status !== 'open') continue;
     const d = new Date(it.due);
     if (dayKey(d) !== tk && d > now) continue;
     const over = d < now;
-    rows.push({ at: d, html: `<li class="tl${over ? ' overdue' : ''}"><time>${dayKey(d) === tk ? fmtTime(d) : d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}</time>
-      <div>${TYPES[it.type].icon} <b>${esc(it.title)}</b><br><small>${over ? 'Overdue · ' : ''}${it.assignees.map(nameOf).map(esc).join(', ') || 'nobody tagged'}</small></div>
+    rows.push({ at: d, html: `<li class="tl t-${it.type}${over ? ' overdue' : ''}"><time>${dayKey(d) === tk ? fmtTime(d) : d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}</time><span class="tile">${TYPES[it.type].icon}</span>
+      <div><b>${esc(it.title)}</b><br><small>${over ? '⚠️ Overdue · ' : ''}${it.assignees.map(nameOf).map(esc).join(', ') || 'nobody tagged'}</small></div>
       <button type="button" class="btn ok small" data-action="done" data-id="${it.id}">Done</button></li>` });
   }
   rows.sort((a, b) => a.at - b.at);
   const lists = state.items.filter(i => i.type === 'grocery' && i.status === 'open');
   const forMe = unseenForMe().length;
-  const greet = now.getHours() < 12 ? 'Good morning' : now.getHours() < 17 ? 'Good afternoon' : 'Good evening';
+  const h = now.getHours();
+  const greet = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+  const wave = h < 12 ? '☀️' : h < 17 ? '🌤️' : '🌙';
   return `
-    <div class="section-h"><h2>${greet}, ${esc(nameOf(state.currentId))}</h2><small>${now.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' })}</small></div>
-    <div class="summary">
-      <span class="stat"><b>${rows.length}</b> on today’s timeline</span>
-      <span class="stat${forMe ? ' bad' : ''}"><b>${forMe}</b> new tags for you</span>
-      <span class="stat${missed ? ' bad' : ''}"><b>${missed}</b> missed doses</span>
+    <div class="greet"><h2>${greet}, ${esc(nameOf(state.currentId))} ${wave}</h2><p>${now.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' })}</p></div>
+    <div class="quick">${Object.entries(TYPES).map(([k, t]) => `<button type="button" class="t-${k}" data-quick="${k}"><span class="ic">${t.icon}</span>${t.label}</button>`).join('')}</div>
+    <div class="stats">
+      <div class="stat"><b>${rows.length}</b><span>📅 today</span></div>
+      <div class="stat${forMe ? ' hot' : ''}"><b>${forMe}</b><span>🙋 new for you</span></div>
+      <div class="stat${missed ? ' bad' : ''}"><b>${missed}</b><span>💊 missed</span></div>
     </div>
-    <section style="display:grid;gap:10px"><div class="section-h"><h2>Today’s timeline</h2><small>pickups · medicines · reminders</small></div>
-      ${rows.length ? `<ol class="timeline">${rows.map(r => r.html).join('')}</ol>` : '<p class="empty">Nothing scheduled today. Tap + to add a pickup, medicine or reminder.</p>'}
+    <section><div class="section-h"><h2>Today’s timeline</h2><small>pickups · medicines · reminders</small></div>
+      ${rows.length ? `<ol class="timeline">${rows.map(r => r.html).join('')}</ol>` : empty('🌴', 'Nothing scheduled today. Tap + to add a pickup, medicine or reminder.')}
     </section>
-    <section style="display:grid;gap:10px"><div class="section-h"><h2>Open shopping lists</h2><small>${lists.length}</small></div>
-      ${lists.length ? `<div class="cards">${lists.map(card).join('')}</div>` : '<p class="empty">No open lists.</p>'}
+    <section><div class="section-h"><h2>Shopping lists 🛍️</h2><small>${lists.length} open</small></div>
+      ${lists.length ? `<div class="cards">${lists.map(card).join('')}</div>` : empty('🧺', 'No open lists. Tap Grocery above to start one.')}
     </section>
-    <p class="demo-note">Prototype: data stays in this browser only. Use “Acting as” at the top to see the app as each family member.</p>`;
+    <p class="demo-note">Prototype · data stays in this browser only. Tap a face at the top to see the app as each family member.</p>`;
 }
 
 function sortItems(arr) {
@@ -429,54 +498,58 @@ function viewMine() {
   const tagged = sortItems(state.items.filter(involvesMe));
   const mine = sortItems(state.items.filter(it => it.createdBy === state.currentId && !involvesMe(it)));
   return `
-    <section style="display:grid;gap:10px"><div class="section-h"><h2>Tagged to ${esc(nameOf(state.currentId))}</h2><small>${tagged.filter(i => i.status === 'open').length} open</small></div>
-      ${tagged.length ? `<div class="cards">${tagged.map(card).join('')}</div>` : '<p class="empty">Nobody has tagged you yet.</p>'}</section>
-    <section style="display:grid;gap:10px"><div class="section-h"><h2>Requests you sent</h2><small>see who said “on it”</small></div>
-      ${mine.length ? `<div class="cards">${mine.map(card).join('')}</div>` : '<p class="empty">You have not tagged anyone yet. Tap + to ask for help.</p>'}</section>`;
+    <section><div class="section-h"><h2>Tagged to you 🙋</h2><small>${tagged.filter(i => i.status === 'open').length} open</small></div>
+      ${tagged.length ? `<div class="cards">${tagged.map(card).join('')}</div>` : empty('😌', 'Nobody has tagged you yet.')}</section>
+    <section><div class="section-h"><h2>You asked for 📤</h2><small>👍 shows who is on it</small></div>
+      ${mine.length ? `<div class="cards">${mine.map(card).join('')}</div>` : empty('🤝', 'You have not tagged anyone yet. Tap + to ask for help.')}</section>`;
 }
 function viewFamily() {
   const items = sortItems(state.items.filter(i => familyFilter === 'all' || i.type === familyFilter));
   const btn = (k, l) => `<button type="button" data-filter="${k}" aria-pressed="${familyFilter === k}">${l}</button>`;
   return `
-    <div class="section-h"><h2>Everything in the family</h2><small>${state.items.length} items</small></div>
-    <div class="filters">${btn('all', 'All')}${Object.entries(TYPES).map(([k, t]) => btn(k, `${t.icon} ${t.label}`)).join('')}</div>
-    ${items.length ? `<div class="cards">${items.map(card).join('')}</div>` : '<p class="empty">Nothing here yet.</p>'}`;
+    <div class="section-h"><h2>Everything 📋</h2><small>${state.items.length} items</small></div>
+    <div class="filters">${btn('all', '✨ All')}${Object.entries(TYPES).map(([k, t]) => btn(k, `${t.icon} ${t.label}`)).join('')}</div>
+    ${items.length ? `<div class="cards">${items.map(card).join('')}</div>` : empty('📭', 'Nothing here yet.')}`;
 }
 function viewMembers() {
+  const next = (state.members.length % COLOURS) + 1;
   return `
-    <div class="section-h"><h2>Family members</h2><small>${state.members.length}</small></div>
+    <div class="section-h"><h2>Our family 👨‍👩‍👧‍👦</h2><small>${state.members.length} members</small></div>
     <div class="panel">${state.members.map(m => `
-      <div class="member-row"><div style="display:flex;gap:10px;align-items:center;min-width:0"><span class="big">${esc(m.emoji)}</span>
-        <div><b>${esc(m.name)}</b>${m.id === state.currentId ? ' <small class="meta">(you)</small>' : ''}<br><small class="meta">${esc(m.relation)}</small></div></div>
-        <div class="actions"><button type="button" class="btn small" data-action="switch" data-id="${m.id}">Act as</button>
+      <div class="member-row"><div style="display:flex;gap:12px;align-items:center;min-width:0"><span class="face" style="${mc(m)}">${esc(m.emoji)}</span>
+        <div><b>${esc(m.name)}</b>${m.id === state.currentId ? ' <small class="meta">· you</small>' : ''}<br><small class="meta">${esc(m.relation)}</small></div></div>
+        <div class="actions">${m.id !== state.currentId ? `<button type="button" class="btn small" data-action="switch" data-id="${m.id}">Act as</button>` : ''}
         ${state.members.length > 1 ? `<button type="button" class="btn small danger" data-action="remove-member" data-id="${m.id}">Remove</button>` : ''}</div></div>`).join('')}
     </div>
     <form class="panel" data-form="add-member">
-      <h3>Add a member</h3>
+      <h3>➕ Add a member</h3>
       <div class="grid2">
         <label class="f" for="nm-name"><span>Name</span><input id="nm-name" name="name" required placeholder="e.g. Meena"></label>
         <label class="f" for="nm-rel"><span>Relation</span><select id="nm-rel" name="relation">${RELATIONS.map(r => `<option>${r}</option>`).join('')}</select></label>
-        <label class="f" for="nm-emoji"><span>Picture</span><select id="nm-emoji" name="emoji">${EMOJIS.map(e => `<option>${e}</option>`).join('')}</select></label>
+        <label class="f" for="nm-emoji"><span>Avatar</span><select id="nm-emoji" name="emoji">${EMOJIS.map(e => `<option>${e}</option>`).join('')}</select></label>
       </div>
-      <div class="row-end"><button class="btn primary">Add member</button></div>
+      <fieldset><legend>Colour</legend><div class="swatches">${Array.from({ length: COLOURS }, (_, i) => i + 1).map(c =>
+        `<label style="--mc: var(--c${c})" for="nm-c${c}"><input type="radio" id="nm-c${c}" name="color" value="${c}" ${c === next ? 'checked' : ''} aria-label="Colour ${c}"></label>`).join('')}</div></fieldset>
+      <div class="row-end"><button class="btn primary">Add to family</button></div>
     </form>
     <form class="panel" data-form="settings">
-      <h3>Family settings</h3>
+      <h3>⚙️ Settings</h3>
       <label class="f" for="fam-name"><span>Family name</span><input id="fam-name" name="familyName" value="${esc(state.familyName)}"></label>
       <div class="actions"><button class="btn primary">Save name</button>
-        <button type="button" class="btn" data-action="notif">Allow phone notifications</button>
-        <button type="button" class="btn danger" data-action="reset" id="resetBtn">Reset example data</button></div>
-      <p class="meta">In the real app, family members join with their mobile number and an invite code, and reminders arrive as push notifications even when the app is closed.</p>
+        <button type="button" class="btn" data-action="notif">🔔 Allow notifications</button>
+        <button type="button" class="btn danger" data-action="reset">Reset example data</button></div>
+      <p class="meta">In the Android app, members join with their mobile number and an invite code, and reminders arrive as phone notifications even when the app is closed.</p>
     </form>`;
 }
 
 function render() {
   if (!member(state.currentId)) state.currentId = state.members[0].id;
   $('#familyName').textContent = state.familyName;
-  $('#subtitle').textContent = `${state.members.length} members · ${state.items.filter(i => i.status === 'open').length} open items`;
-  $('#whoSelect').innerHTML = state.members.map(m => `<option value="${m.id}" ${m.id === state.currentId ? 'selected' : ''}>${esc(m.emoji)} ${esc(m.name)} (${esc(m.relation)})</option>`).join('');
+  $('#subtitle').textContent = `${state.members.length} members · ${state.items.filter(i => i.status === 'open').length} open requests`;
+  $('#whoSelect').innerHTML = state.members.map(m => `<option value="${m.id}" ${m.id === state.currentId ? 'selected' : ''}>${esc(m.emoji)} ${esc(m.name)}</option>`).join('');
+  $('#stack').innerHTML = state.members.map(m => `<button type="button" style="${mc(m)}" data-action="switch" data-id="${m.id}" aria-pressed="${m.id === state.currentId}" title="${esc(m.name)} (${esc(m.relation)})" aria-label="Act as ${esc(m.name)}">${esc(m.emoji)}</button>`).join('');
   const n = unseenForMe().length; const b = $('#mineBadge'); b.hidden = !n; b.textContent = n;
-  document.querySelectorAll('.tabs button').forEach(x => x.dataset.tab === tab ? x.setAttribute('aria-current', 'page') : x.removeAttribute('aria-current'));
+  document.querySelectorAll('.tabs [data-tab]').forEach(x => x.dataset.tab === tab ? x.setAttribute('aria-current', 'page') : x.removeAttribute('aria-current'));
   $('#view').innerHTML = { today: viewToday, mine: viewMine, family: viewFamily, members: viewMembers }[tab]();
 }
 
@@ -499,14 +572,14 @@ function tick() {
         const due = doseDate(now, t), key = `${it.id}_${dayKey(now)}_${t}_${me}`;
         if (now >= due && now - due < 3600000 && !it.taken[`${dayKey(now)}_${t}`] && !state.notified[key]) {
           state.notified[key] = 1; changed = true;
-          notify(`Medicine for ${nameOf(it.forMember)}`, `${it.title}, ${it.dose} (${fmtTime(due)})`);
+          notify(`💊 Medicine for ${nameOf(it.forMember)}`, `${it.title}, ${it.dose} (${fmtTime(due)})`);
         }
       }
     } else if (it.due && it.status === 'open' && it.assignees.includes(me)) {
       const due = new Date(it.due), lead = it.type === 'pickup' ? 15 * 60000 : 0, key = `${it.id}_${me}`;
       if (now >= due - lead && now - due < 3600000 && !state.notified[key]) {
         state.notified[key] = 1; changed = true;
-        notify(TYPES[it.type].long, `${it.title} at ${fmtTime(due)}`);
+        notify(`${TYPES[it.type].icon} ${TYPES[it.type].long}`, `${it.title} at ${fmtTime(due)}`);
       }
     }
   }
@@ -550,12 +623,12 @@ function typeFields(type) {
 }
 function openComposer(type = createType) {
   createType = type;
-  $('#typePicker').innerHTML = Object.entries(TYPES).map(([k, t]) => `<button type="button" data-type="${k}" aria-pressed="${k === type}"><span class="ic">${t.icon}</span>${t.label}</button>`).join('');
+  $('#typePicker').innerHTML = Object.entries(TYPES).map(([k, t]) => `<button type="button" class="t-${k}" data-type="${k}" aria-pressed="${k === type}"><span class="ic">${t.icon}</span>${t.label}</button>`).join('');
   $('#typeFields').innerHTML = typeFields(type);
-  $('#tagLegend').textContent = type === 'medicine' ? 'Tag caregivers (they are alerted if a dose is missed)' : 'Tag family members (they get the reminder)';
+  $('#tagLegend').textContent = type === 'medicine' ? 'Tag caregivers (alerted if a dose is missed)' : 'Tag family members (they get the reminder)';
   const checked = new Set([...document.querySelectorAll('#tagger input:checked')].map(i => i.value));
   $('#tagger').innerHTML = state.members.filter(m => m.id !== state.currentId || type === 'medicine').map(m =>
-    `<label for="tag-${m.id}"><input type="checkbox" id="tag-${m.id}" name="assign" value="${m.id}" ${checked.has(m.id) ? 'checked' : ''}>${esc(m.emoji)} ${esc(m.name)} <small class="meta">${esc(m.relation)}</small></label>`).join('');
+    `<label for="tag-${m.id}" style="${mc(m)}"><input type="checkbox" id="tag-${m.id}" name="assign" value="${m.id}" ${checked.has(m.id) ? 'checked' : ''}><i>${esc(m.emoji)}</i>${esc(m.name)}</label>`).join('');
   if (!$('#composer').open) { $('#f-notes').value = ''; $('#composer').showModal(); }
 }
 function submitComposer(e) {
@@ -572,38 +645,39 @@ function submitComposer(e) {
   if (createType === 'pickup') { const p = fd.get('person'); it = { ...base, title: `Pick ${nameOf(p)} up from ${fd.get('location').trim()}`, person: p, location: fd.get('location').trim(), due }; }
   if (createType === 'medicine') it = { ...base, title: fd.get('title').trim(), forMember: fd.get('forMember'), dose: fd.get('dose').trim(), times: [...new Set(fd.getAll('time').filter(Boolean))].sort(), startDate: dayKey(new Date()), endDate: fd.get('endDate') || '', taken: {} };
   if (createType === 'reminder') it = { ...base, title: fd.get('title').trim(), due };
-  if (it.type === 'medicine' && !it.ack.includes(state.currentId) && it.assignees.includes(state.currentId)) it.ack.push(state.currentId);
+  if (it.type === 'medicine' && it.assignees.includes(state.currentId)) it.ack.push(state.currentId);
   state.items.unshift(it);
   $('#composer').close(); form.reset();
-  toast(assignees.length ? `Created. ${assignees.map(nameOf).join(', ')} ${assignees.length > 1 ? 'have' : 'has'} been tagged.` : 'Created.');
+  toast(assignees.length ? `🚀 Sent! ${assignees.map(nameOf).join(', ')} ${assignees.length > 1 ? 'have' : 'has'} been tagged.` : '✅ Created.');
   commit();
 }
 
 /* ---------- Events ---------- */
 let resetArmed = false;
 document.addEventListener('click', e => {
-  const tabBtn = e.target.closest('.tabs button'); if (tabBtn) { tab = tabBtn.dataset.tab; render(); window.scrollTo(0, 0); return; }
+  const tabBtn = e.target.closest('.tabs [data-tab]'); if (tabBtn) { tab = tabBtn.dataset.tab; render(); window.scrollTo(0, 0); return; }
   const filt = e.target.closest('[data-filter]'); if (filt) { familyFilter = filt.dataset.filter; render(); return; }
+  const quick = e.target.closest('[data-quick]'); if (quick) { openComposer(quick.dataset.quick); return; }
   const typeBtn = e.target.closest('#typePicker [data-type]'); if (typeBtn) { openComposer(typeBtn.dataset.type); return; }
   const b = e.target.closest('[data-action]'); if (!b) return;
   const it = state.items.find(x => x.id === b.dataset.id);
   switch (b.dataset.action) {
-    case 'ack': it.ack.push(state.currentId); toast(`${nameOf(it.createdBy)} will see that you are on it.`); break;
-    case 'done': it.status = 'done'; it.doneBy = state.currentId; if (!it.ack.includes(state.currentId) && it.assignees.includes(state.currentId)) it.ack.push(state.currentId); toast(`Marked done. ${nameOf(it.createdBy)} has been told.`); break;
+    case 'ack': it.ack.push(state.currentId); toast(`👍 ${nameOf(it.createdBy)} will see that you are on it.`); break;
+    case 'done': it.status = 'done'; it.doneBy = state.currentId; if (!it.ack.includes(state.currentId) && it.assignees.includes(state.currentId)) it.ack.push(state.currentId); toast(`🎉 Done! ${nameOf(it.createdBy)} has been told.`); break;
     case 'reopen': it.status = 'open'; delete it.doneBy; break;
-    case 'delete': state.items = state.items.filter(x => x !== it); toast('Removed.'); break;
-    case 'take': it.taken[`${dayKey(new Date())}_${b.dataset.time}`] = state.currentId; toast(`Dose recorded for ${nameOf(it.forMember)}.`); break;
+    case 'delete': state.items = state.items.filter(x => x !== it); toast('🗑️ Removed.'); break;
+    case 'take': it.taken[`${dayKey(new Date())}_${b.dataset.time}`] = state.currentId; toast(`💊 Dose recorded for ${nameOf(it.forMember)}.`); break;
     case 'toggle-line': { const l = it.list.find(x => x.id === b.dataset.line); l.done = !l.done; l.doneBy = l.done ? state.currentId : undefined;
-      if (it.list.every(x => x.done) && it.status === 'open') { it.status = 'done'; it.doneBy = state.currentId; toast(`All items picked up. ${nameOf(it.createdBy)} has been told.`); } break; }
-    case 'switch': state.currentId = b.dataset.id; announceSwitch(); break;
+      if (it.list.every(x => x.done) && it.status === 'open') { it.status = 'done'; it.doneBy = state.currentId; toast(`🎉 Everything bought! ${nameOf(it.createdBy)} has been told.`); } break; }
+    case 'switch': if (state.currentId === b.dataset.id) return; state.currentId = b.dataset.id; announceSwitch(); break;
     case 'remove-member': { const id = b.dataset.id; state.members = state.members.filter(m => m.id !== id);
       state.items.forEach(x => { x.assignees = x.assignees.filter(a => a !== id); x.ack = x.ack.filter(a => a !== id); }); break; }
     case 'notif':
       if (!('Notification' in window)) { toast('This browser does not support notifications. In-app alerts will still appear.'); return; }
-      Promise.resolve(Notification.requestPermission()).then(p => toast(p === 'granted' ? 'Notifications allowed.' : 'Notifications were not allowed here. In-app alerts will still appear.')).catch(() => toast('Notifications are blocked in this view. In-app alerts will still appear.'));
+      Promise.resolve(Notification.requestPermission()).then(p => toast(p === 'granted' ? '🔔 Notifications allowed.' : 'Notifications were not allowed here. In-app alerts will still appear.')).catch(() => toast('Notifications are blocked in this view. In-app alerts will still appear.'));
       return;
     case 'reset':
-      if (!resetArmed) { resetArmed = true; b.textContent = 'Tap again to confirm reset'; setTimeout(() => { resetArmed = false; if (b.isConnected) b.textContent = 'Reset example data'; }, 4000); return; }
+      if (!resetArmed) { resetArmed = true; b.textContent = 'Tap again to confirm'; setTimeout(() => { resetArmed = false; if (b.isConnected) b.textContent = 'Reset example data'; }, 4000); return; }
       resetArmed = false; state = seed(); tab = 'today'; toast('Example data restored.'); break;
     default: return;
   }
@@ -611,21 +685,21 @@ document.addEventListener('click', e => {
 });
 document.addEventListener('submit', e => {
   const f = e.target;
-  if (f.id === 'createForm') return submitComposer(e);
+  if (f.id === 'createForm') return;
   e.preventDefault();
   const fd = new FormData(f);
   if (f.dataset.form === 'add-line') { const v = (fd.get('line') || '').trim(); if (!v) return; const it = state.items.find(x => x.id === f.dataset.id); it.list.push({ id: uid(), text: v, done: false }); it.status = 'open'; commit(); document.getElementById(`add-${it.id}`)?.focus(); }
-  if (f.dataset.form === 'add-member') { const name = (fd.get('name') || '').trim(); if (!name) { toast('Enter a name first.'); return; } state.members.push({ id: uid(), name, relation: fd.get('relation'), emoji: fd.get('emoji') }); toast(`${name} added to the family.`); commit(); }
-  if (f.dataset.form === 'settings') { state.familyName = (fd.get('familyName') || '').trim() || 'My Family'; toast('Family name saved.'); commit(); }
+  if (f.dataset.form === 'add-member') { const name = (fd.get('name') || '').trim(); if (!name) { toast('Enter a name first.'); return; } state.members.push({ id: uid(), name, relation: fd.get('relation'), emoji: fd.get('emoji'), color: Number(fd.get('color')) || 1 }); toast(`👋 ${name} added to the family.`); commit(); }
+  if (f.dataset.form === 'settings') { state.familyName = (fd.get('familyName') || '').trim() || 'My Family'; toast('✅ Family name saved.'); commit(); }
 });
 function announceSwitch() {
   const n = unseenForMe().length;
-  toast(`Now acting as ${nameOf(state.currentId)}.${n ? ` ${n} new tag${n > 1 ? 's' : ''} waiting.` : ''}`);
+  toast(`Now acting as ${nameOf(state.currentId)}.${n ? ` ${n} new tag${n > 1 ? 's' : ''} waiting 🙋` : ''}`);
 }
 $('#whoSelect').addEventListener('change', e => { state.currentId = e.target.value; announceSwitch(); commit(); tick(); });
-$('#fab').addEventListener('click', () => openComposer(tab === 'members' ? 'reminder' : createType));
+$('#fab').addEventListener('click', () => openComposer(createType));
 $('#cancelCreate').addEventListener('click', () => $('#composer').close());
-$('#createForm').addEventListener('submit', e => { e.stopPropagation(); submitComposer(e); });
+$('#createForm').addEventListener('submit', submitComposer);
 
 render();
 tick();

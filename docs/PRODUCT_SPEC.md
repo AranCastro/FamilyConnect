@@ -1,4 +1,13 @@
-# FamilyConnect — Product Specification (v0.1)
+# FamilyConnect — Product Specification (v0.2)
+
+## 0. Decisions confirmed (5 November 2026)
+
+| Topic | Decision |
+|---|---|
+| Platform | Android only (no iOS at launch) |
+| Language | English only |
+| Pricing | Free app, no paid tier and no in-app purchases |
+| Visual style | Modern, colourful, emoji-led interface (see section 6A) |
 
 ## 1. Purpose
 
@@ -54,7 +63,7 @@ Every member belongs to one family group. A member may be marked as an **admin**
 - **Members**: family list, invites and settings.
 
 ## 4. Later features (post-MVP)
-1. Voice entry ("Remind Ravi to buy milk at 6 pm") in English, Hindi and regional languages.
+1. Voice entry ("Remind Ravi to buy milk at 6 pm").
 2. Shared family calendar (birthdays, anniversaries, exams).
 3. Live location for pickups and an "I have reached" check-in.
 4. Elder mode: large text, high contrast, voice read-out of reminders.
@@ -81,13 +90,31 @@ Reminder    { itemId, repeat: none|daily|weekly|monthly }
 
 | Layer | Recommendation | Reason |
 |---|---|---|
-| Mobile app | Flutter (Android first, then iOS) | One codebase for both platforms; Android has the larger share of users in India |
+| Mobile app | Kotlin + Jetpack Compose (Material 3) | Native Android toolkit; direct access to Android exact alarms and notification channels, which medicine and pickup reminders depend on |
 | Sign-in | Firebase Authentication (phone OTP) | Matches how families already identify each other |
 | Database | Cloud Firestore | Real-time sync between family members' phones |
-| Notifications | Firebase Cloud Messaging + scheduled Cloud Functions | Push alerts when the app is closed; missed-dose checks on the server |
+| Notifications | Firebase Cloud Messaging + Android AlarmManager | FCM delivers new tags from other members; local exact alarms fire medicine and pickup reminders even when offline |
+| Server logic | Cloud Functions (scheduled) | Missed-dose alerts to caregivers |
 | Offline | Firestore offline cache | Lists remain usable with poor connectivity |
 
-An alternative is React Native with Supabase (PostgreSQL); the choice depends on the developer's existing skills.
+Running costs for a free app: Firebase's no-cost Spark plan covers a small beta; Cloud Functions require the pay-as-you-go Blaze plan, which has a monthly free allowance. Publishing on Google Play requires a one-time developer registration fee. Check current Firebase and Google Play pricing before launch, as both change.
+
+If an iPhone version is wanted later, the data layer (Firebase) can be reused and only the app screens need rebuilding.
+
+## 6A. Visual design
+
+The prototype in `prototype/` sets the visual direction for the Android app.
+
+| Element | Specification |
+|---|---|
+| Header | Coral-to-marigold gradient (`#FF5F4D` → `#FFA63D`) with the family's avatar faces |
+| Request colours | Grocery green `#18A35F` 🛒 · Pickup blue `#2F7EF0` 🚗 · Medicine pink `#E2457B` 💊 · Reminder violet `#8458F2` ⏰ |
+| Member colours | Six avatar colours (blue, pink, amber, green, violet, teal); each member picks one, and it appears wherever that person is tagged |
+| Typography | Baloo 2 (headings), Nunito (body); both on Google Fonts and usable in Android |
+| Shapes | Rounded cards (22 dp radius), pill buttons, bottom navigation with a raised centre "+" button |
+| Emoji | One emoji per request type and per action (👍 On it, ✅ Done, 💬 WhatsApp, 🎉 completed) |
+| Dark mode | Full dark theme following the phone setting |
+| Accessibility | Minimum 48 dp touch targets; colour is always paired with an emoji or text, so status is readable without colour |
 
 ## 7. Privacy and safety
 - Data is visible only to members of the same family group.
@@ -99,13 +126,12 @@ An alternative is React Native with Supabase (PostgreSQL); the choice depends on
 | Phase | Scope | Indicative effort |
 |---|---|---|
 | 0 | Clickable web prototype (this repository, `prototype/`) | Done |
-| 1 | Flutter app: sign-in, family invite, grocery lists, reminders, push notifications | 4–6 weeks |
+| 1 | Android app: sign-in, family invite, grocery lists, reminders, push notifications | 4–6 weeks |
 | 2 | Pickups, medicine schedules, missed-dose alerts | 3–4 weeks |
 | 3 | Closed beta with 10–20 families, feedback, Play Store release | 3–4 weeks |
 
 Effort figures are planning estimates for a single developer, not measured values.
 
 ## 9. Open questions
-1. Free app, or a paid tier for features such as location sharing and elder mode?
-2. Which languages are required at launch?
-3. Should one person be able to belong to two families (e.g. a married daughter who also helps her parents)?
+1. Should one person be able to belong to two families (e.g. a married daughter who also helps her parents)?
+2. App name and icon for the Play Store listing: keep "FamilyConnect" or choose another (check that the name is not already taken on Google Play)?

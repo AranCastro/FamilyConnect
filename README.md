@@ -21,4 +21,4 @@ Open `prototype/index.html` in a browser. It starts with an example family. Use 
 
 ## Next step
 
-Build the real mobile app (Flutter + Firebase recommended; see `docs/PRODUCT_SPEC.md`, section 6) so that family members on different phones share the same data and receive push notifications.
+Confirmed: **Android only, English, free.** Build the Android app (Kotlin + Jetpack Compose + Firebase; see `docs/PRODUCT_SPEC.md`, sections 6 and 6A) so that family members on different phones share the same data and receive phone notifications.
