@@ -1,4 +1,4 @@
-# FamilyConnect — Product Specification (v0.2)
+# FamilyConnect — Product Specification (v0.3)
 
 ## 0. Decisions confirmed (5 November 2026)
 
@@ -8,7 +8,8 @@
 | Language | English only |
 | Pricing | Free app, no paid tier and no in-app purchases |
 | Visual style | Modern, colourful, emoji-led interface (see section 6A) |
-| Sign-in | Google account (Gmail) via one-tap sign-in |
+| Sign-in | Google account (Gmail) via one-tap sign-in (section 6C) |
+| Sync speed | Instant on the sender's phone; other open phones updated in about one second (section 6D) |
 | Member pictures | Real profile photos; initials on the member's colour until a photo is added |
 | App colours | Six selectable colour themes (Sunrise, Ocean, Forest, Royal, Rose, Night) |
 
@@ -88,6 +89,20 @@ Pickup      { itemId, personId, location }
 Medicine    { itemId, patientId, dose, times[], startDate, endDate }
 DoseLog     { itemId, date, time, takenBy, takenAt }
 Reminder    { itemId, repeat: none|daily|weekly|monthly }
+JoinRequest { id, familyId, googleUid, name, email, photoUrl, status: pending|approved|declined, createdAt }
+Invite      { code, familyId, createdBy, expiresAt }
+```
+
+Firestore layout (each item and each grocery line is its own small document, so a change sends only a few hundred bytes):
+
+```
+families/{familyId}
+  members/{uid}
+  items/{itemId}
+    lines/{lineId}        (grocery items)
+    doses/{yyyy-mm-dd_hh:mm}  (medicine dose log)
+  joinRequests/{uid}
+invites/{code}
 ```
 
 ## 6. Recommended technology
@@ -111,7 +126,7 @@ If an iPhone version is wanted later, the data layer (Firebase) can be reused an
 1. **Sign-in.** Each member opens the app and taps "Continue with Google". Firebase Authentication confirms the account; no separate password is created.
 2. **Joining.** The first member creates the family and receives an invite code. Others enter the code (or tap the shared link) and are added to that family.
 3. **One shared copy.** The family's members, lists and reminders are stored once in Cloud Firestore, under that family. Every member's phone keeps a live connection ("listener") to it.
-4. **Live updates.** When Priya adds "Milk 2 L" to the grocery list, her phone writes the change to Firestore; Ravi's phone receives it, usually within one to two seconds, and the list updates on screen. When Ravi ticks the item, Priya sees the tick.
+4. **Live updates.** When Priya adds "Milk 2 L" to the grocery list, it appears on her screen at once and her phone sends the change to Firestore; Ravi's phone receives it, targeted at about one second (section 6D), and the list updates on screen. When Ravi ticks the item, Priya sees the tick.
 5. **Notifications.** When someone is tagged, a Cloud Function sends a push notification through Firebase Cloud Messaging to the tagged members' phones, even if the app is closed. Medicine and pickup times are also set as alarms on each phone, so they fire without internet.
 6. **Offline.** Without internet, changes are saved on the phone and uploaded automatically when the connection returns.
 7. **Privacy.** Firestore security rules allow a signed-in user to read and write only the data of families they belong to.
@@ -124,6 +139,75 @@ flowchart LR
   F -- new tag --> CF[Cloud Function]
   CF -- push notification --> B
 ```
+
+## 6C. Sign-in and authentication
+
+### What the user sees
+1. Open FamilyConnect and tap **Continue with Google**.
+2. Android shows the Google accounts already on the phone (e.g. `ravi.sharma@gmail.com`).
+3. Tap the account; sign-in is complete. No password is typed, because the person is already signed in to Google on the phone.
+
+### What happens in the background
+
+| Step | Component | Action |
+|---|---|---|
+| 1 | Android Credential Manager ("Sign in with Google") | Shows the account picker and asks Google to confirm the account |
+| 2 | Google | Verifies the account (including 2-step verification if enabled) and returns a signed ID token containing only name, email address and profile photo |
+| 3 | Firebase Authentication | Verifies that the token was issued by Google and creates or retrieves the member's permanent user ID (UID) |
+| 4 | App | Stores the session securely; the member stays signed in until they sign out |
+| 5 | Firestore security rules | Check the UID on every read and write: the user must be a member of that family |
+
+### What the app can and cannot access
+- **Can access:** name, email address, profile photo.
+- **Cannot access:** Gmail password, emails, contacts, Google Drive or any other Google data. The app requests no additional Google permissions.
+
+### Joining a family
+1. The family admin taps **Invite** and shares a six-digit code or link on WhatsApp. Codes expire after 48 hours.
+2. The new member signs in with Google and enters the code; this creates a **join request**.
+3. The admin receives a notification and taps **Approve** or **Decline**. A code alone does not give access.
+
+### Special cases
+
+| Case | Handling |
+|---|---|
+| Child without a Gmail account | Parent creates a supervised Google account through Google Family Link, or adds the child as a managed member (no login) |
+| Elder without a smartphone | Added as a managed member; caregivers confirm medicine doses on their behalf |
+| Lost or stolen phone | Admin removes the member's access in the app; the member can also sign the phone out from their Google account settings |
+| Member leaves the family | Admin removes them, or they tap **Leave family**; their access ends immediately |
+| Delete account | Settings → Delete my account removes the member's profile and photo (required by Google Play policy) |
+
+### Security rule (outline)
+
+```
+match /families/{familyId}/{document=**} {
+  allow read, write: if request.auth != null
+    && exists(/databases/$(database)/documents/families/$(familyId)/members/$(request.auth.uid));
+}
+```
+
+Google sign-in through Firebase Authentication has no per-login charge; SMS one-time-password sign-in is charged per message, which is why it is not used.
+
+## 6D. Fast sync design
+
+Target behaviour (to be measured during the beta; actual times depend on the mobile network):
+
+| Situation | Target |
+|---|---|
+| Change on the sender's own screen | Immediate (no waiting for the server) |
+| Other members with the app open | About 1 second on 4G or Wi-Fi |
+| Other members with the app closed | Notification within a few seconds; data already updated when the app is opened |
+| App start | Today screen shown at once from the phone's saved copy, then refreshed |
+
+Measures used to reach these targets:
+
+1. **Instant local update.** Firestore applies each change to the phone's local copy before the server confirms it, so the sender never waits. A small tick shows ✓ when sent and ✓✓ when every tagged member's phone has received it.
+2. **Server region in India.** The Firestore database and Cloud Functions are created in `asia-south1` (Mumbai), the Google Cloud region nearest to most users. The database location cannot be changed after creation, so it must be chosen correctly at set-up.
+3. **Live listeners, no polling.** While the app is open, each phone keeps one open connection to the family's data, and the server pushes changes as they happen. There is no "pull to refresh" delay.
+4. **Small documents.** Ticking one grocery item updates one small document, not the whole list, so less data travels over slow connections.
+5. **Listen only to what is needed.** Phones subscribe to open items and the last 30 days of history, not the full archive.
+6. **High-priority push when the app is closed.** New tags, pickups and missed-dose alerts are sent as high-priority Firebase Cloud Messaging messages, which Android delivers immediately even in battery-saving mode. The message carries the item's details, so the notification shows full content and the app's local copy is updated before the member opens it. High priority is reserved for these alerts, because Android lowers the priority of apps that overuse it.
+7. **Offline copy always on.** Firestore's offline persistence keeps the family's data on the phone, so the app opens instantly and works without internet; queued changes upload automatically on reconnection.
+8. **Optional: warm server.** Keeping one Cloud Functions instance always running removes start-up delay on the first notification after a quiet period. This has a small monthly cost, so it is left off for the free beta and reconsidered if notification delays are reported.
 
 ## 6A. Visual design
 
